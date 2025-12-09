@@ -13,9 +13,11 @@ import {
   UploadedFile,
   BadRequestException,
   Res,
+  NotFoundException,
 } from '@nestjs/common';
 import { AuthGuard } from '@nestjs/passport';
 import { ContactService } from './contact.service';
+import { ImportProgressService, ImportProgress } from './import-progress.service';
 import { CreateContactDto } from './dto/create-contact.dto';
 import { UpdateContactDto } from './dto/update-contact.dto';
 import { Roles } from '../auth/roles.decorator';
@@ -27,7 +29,10 @@ import { Response } from 'express';
 @Controller('contact')
 @UseGuards(AuthGuard('jwt'), RolesGuard)
 export class ContactController {
-  constructor(private readonly contactService: ContactService) { }
+  constructor(
+    private readonly contactService: ContactService,
+    private readonly importProgressService: ImportProgressService,
+  ) { }
 
   @Post()
   @Roles(Role.ADMIN)
@@ -64,6 +69,7 @@ export class ContactController {
       filters,
     });
   }
+
   @Get('not-sent/:id')
   @Roles(Role.ADMIN)
   findUnassignedContactsForUser(
@@ -78,6 +84,16 @@ export class ContactController {
       limit: parseInt(limit, 10),
       filters,
     });
+  }
+
+  @Get('import-progress/:jobId')
+  @Roles(Role.ADMIN)
+  getImportProgress(@Param('jobId') jobId: string): ImportProgress {
+    const progress = this.importProgressService.getJob(jobId);
+    if (!progress) {
+      throw new NotFoundException(`Import job ${jobId} not found`);
+    }
+    return progress;
   }
 
   @Get(':id')
@@ -102,7 +118,7 @@ export class ContactController {
   @UseInterceptors(
     FileInterceptor('file', {
       limits: {
-        fileSize: 100 * 1024 * 1024, // 100MB limit
+        fileSize: 500 * 1024 * 1024, // 500MB limit for large files
       },
     }),
   )
@@ -126,8 +142,8 @@ export class ContactController {
       const result = await this.contactService.importContactsFromFile(
         file,
         columnMapping,
-        profile || 'imported',    // Default if not provided (can be mapped from CSV)
-        status || 'active',       // Default if not provided
+        profile || 'imported',
+        status || 'active',
       );
       response.json(result);
     } catch (error) {
@@ -137,5 +153,51 @@ export class ContactController {
         error: error.name || 'Error',
       });
     }
+  }
+
+  @Post('import-async')
+  @UseInterceptors(
+    FileInterceptor('file', {
+      limits: {
+        fileSize: 500 * 1024 * 1024, // 500MB limit for large files
+      },
+    }),
+  )
+  @Roles(Role.ADMIN)
+  async importContactsAsync(
+    @UploadedFile() file: Express.Multer.File,
+    @Body('columnMapping') columnMapping: Record<string, string>,
+    @Body('profile') profile: string,
+    @Body('status') status: string,
+  ): Promise<{ jobId: string; message: string }> {
+    if (!columnMapping) {
+      throw new BadRequestException('Column mapping is required');
+    }
+
+    if (!file) {
+      throw new BadRequestException('No file uploaded');
+    }
+
+    // Create a job ID immediately
+    const jobId = this.importProgressService.createJob();
+
+    // Start processing in background (don't await)
+    this.contactService.importContactsFromFileAsync(
+      file,
+      columnMapping,
+      profile || 'imported',
+      status || 'active',
+      jobId,
+      this.importProgressService,
+    ).catch((error) => {
+      console.error('Async import error:', error);
+      this.importProgressService.failJob(jobId, error.message);
+    });
+
+    // Return immediately with job ID
+    return {
+      jobId,
+      message: 'Import started. Use the jobId to track progress.',
+    };
   }
 }

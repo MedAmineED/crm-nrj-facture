@@ -145,4 +145,72 @@ export class ClientService {
     async remove(id: number): Promise<void> {
         await this.clientRepository.delete(id);
     }
+    async createOrUpdateBatch(
+        clientsData: {
+            num_client: string;
+            profile?: string;
+            status?: string;
+            raisonSociale?: string;
+        }[],
+    ): Promise<void> {
+        if (clientsData.length === 0) return;
+
+        console.log(`Processing batch of ${clientsData.length} clients`);
+
+        // 1. Fetch existing clients
+        const numClients = clientsData.map((c) => c.num_client);
+        const existingClients = await this.clientRepository.find({
+            where: numClients.map((num_client) => ({ num_client })),
+            select: ['id', 'num_client', 'profile', 'status', 'raisonSociale'], // Only select needed fields
+        });
+
+        const existingClientsMap = new Map(
+            existingClients.map((c) => [c.num_client, c]),
+        );
+
+        const toInsert: Client[] = [];
+        const toUpdate: Client[] = [];
+
+        for (const data of clientsData) {
+            const existing = existingClientsMap.get(data.num_client);
+            if (existing) {
+                // Update fields if provided
+                let changed = false;
+                if (data.profile && existing.profile !== data.profile) {
+                    existing.profile = data.profile;
+                    changed = true;
+                }
+                if (data.status && existing.status !== data.status) {
+                    existing.status = data.status;
+                    changed = true;
+                }
+                if (data.raisonSociale && existing.raisonSociale !== data.raisonSociale) {
+                    existing.raisonSociale = data.raisonSociale;
+                    changed = true;
+                }
+                if (changed) {
+                    toUpdate.push(existing);
+                }
+            } else {
+                // Create new
+                const newClient = this.clientRepository.create({
+                    num_client: data.num_client,
+                    profile: data.profile || null,
+                    status: data.status || 'active',
+                    raisonSociale: data.raisonSociale || null,
+                });
+                toInsert.push(newClient);
+            }
+        }
+
+        // 2. Bulk Insert
+        if (toInsert.length > 0) {
+            await this.clientRepository.insert(toInsert);
+        }
+
+        // 3. Bulk Update
+        if (toUpdate.length > 0) {
+            await this.clientRepository.save(toUpdate);
+        }
+    }
 }

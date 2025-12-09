@@ -34,6 +34,7 @@ interface ImportResult {
   failedDueToInvalidEmail: number;
   failedDueToDuplicateEmail: number;
   failedDueToOtherErrors: number;
+  otherErrorsDetails?: string[];
 }
 
 const Clients = () => {
@@ -53,6 +54,8 @@ const Clients = () => {
   const [selectedFile, setSelectedFile] = useState<File | null>(null);
   const [csvColumns, setCsvColumns] = useState<string[]>([]);
   const [columnMapping, setColumnMapping] = useState<Record<string, string>>({});
+  const [importJobId, setImportJobId] = useState<string | null>(null);
+  const [importStatus, setImportStatus] = useState<'idle' | 'uploading' | 'processing' | 'completed' | 'failed'>('idle');
 
   const dbFields = [
     { value: 'num_client', label: 'Numéro Client', required: true },
@@ -89,7 +92,6 @@ const Clients = () => {
         )
     },
     defaultText('raisonSociale', 'Raison Sociale'),
-    defaultText('profile', 'Profil'),
     defaultText('status', 'Statut'),
     {
       id: 'actions',
@@ -368,6 +370,7 @@ const Clients = () => {
     setError(null);
     setImportResult(null);
     setShowConfirmModal(false);
+    setImportStatus('uploading');
 
     const formData = new FormData();
     formData.append('file', selectedFile);
@@ -375,31 +378,86 @@ const Clients = () => {
     formData.append('columnMapping', mappingToSend);
 
     try {
-      const response = await axios.post(`${ApiUrls.BASE_URL}contact/import`, formData, {
+      // Start async import - returns immediately with job ID
+      const startResponse = await axios.post(`${ApiUrls.BASE_URL}contact/import-async`, formData, {
         headers: {
           Authorization: `Bearer ${token}`,
           'Content-Type': 'multipart/form-data',
         },
-        timeout: (60000 * 5), // Délai de 30s pour les imports volumineux
+        timeout: 60000, // 1 minute timeout just for the upload
       });
-      setImportResult(response.data);
-      // Réinitialiser les filtres pour s'assurer que les nouveaux clients sont récupérés
-      setFilters({ page: 1, limit: Math.max(filters.limit, 100) });
-      await fetchClients();
+
+      const { jobId } = startResponse.data;
+      setImportJobId(jobId);
+      setImportStatus('processing');
+
+      // Poll for progress
+      const pollInterval = setInterval(async () => {
+        try {
+          const progressResponse = await axios.get(
+            `${ApiUrls.BASE_URL}contact/import-progress/${jobId}`,
+            {
+              headers: { Authorization: `Bearer ${token}` },
+            }
+          );
+
+          const progress = progressResponse.data;
+
+          if (progress.status === 'completed') {
+            clearInterval(pollInterval);
+            setImportStatus('completed');
+            setImportResult({
+              totalRecords: progress.totalRecords,
+              successfulImports: progress.successfulImports,
+              failedImports: progress.failedImports,
+              duplicatePhoneNumbers: progress.duplicatePhoneNumbers,
+              failedDueToMissingNumClient: progress.failedDueToMissingNumClient,
+              failedDueToDuplicateNumClient: progress.failedDueToDuplicateNumClient,
+              failedDueToInvalidPhone: progress.failedDueToInvalidPhone,
+              failedDueToInvalidEmail: progress.failedDueToInvalidEmail,
+              failedDueToDuplicateEmail: progress.failedDueToDuplicateEmail,
+              failedDueToOtherErrors: progress.failedDueToOtherErrors,
+              otherErrorsDetails: progress.otherErrorsDetails,
+            });
+            setIsLoading(false);
+            setFilters({ page: 1, limit: Math.max(filters.limit, 100) });
+            await fetchClients();
+          } else if (progress.status === 'failed') {
+            clearInterval(pollInterval);
+            setImportStatus('failed');
+            setError(progress.errorMessage || 'L\'importation a échoué');
+            setIsLoading(false);
+          }
+          // If still processing, continue polling
+        } catch (pollError) {
+          console.error('Error polling progress:', pollError);
+          // Don't stop polling on transient errors
+        }
+      }, 2000); // Poll every 2 seconds
+
+      // Stop polling after 30 minutes max
+      setTimeout(() => {
+        clearInterval(pollInterval);
+        if (importStatus === 'processing') {
+          setError('L\'importation a pris trop de temps. Veuillez vérifier les résultats plus tard.');
+          setIsLoading(false);
+        }
+      }, 30 * 60 * 1000);
+
     } catch (error: any) {
       console.error('Échec de l\'importation CSV:', error);
-      console.error('Réponse d\'erreur:', error.response?.data);
+      setImportStatus('failed');
       setError(
         error.response?.data?.message ||
         'Échec de l\'importation du fichier CSV. Veuillez vérifier le format du fichier et le mappage.'
       );
-    } finally {
       setIsLoading(false);
+    } finally {
       setSelectedFile(null);
       setColumnMapping({});
       setCsvColumns([]);
     }
-  }, [selectedFile, columnMapping, token, fetchClients, filters.limit]);
+  }, [selectedFile, columnMapping, token, fetchClients, filters.limit, importStatus]);
 
   const handleCancelImport = useCallback(() => {
     setShowConfirmModal(false);
@@ -467,63 +525,195 @@ const Clients = () => {
         </div>
       )}
 
+      {/* Import Processing Indicator */}
+      {importStatus === 'processing' && (
+        <div className="mb-8 card-premium overflow-hidden animate-fade-in">
+          <div className="relative">
+            <div className="absolute top-0 left-0 right-0 h-1.5 bg-gradient-to-r from-blue-500 via-violet-500 to-blue-500 animate-pulse"></div>
+            <div className="p-8 flex flex-col items-center justify-center">
+              <div className="w-16 h-16 rounded-full border-4 border-blue-200 border-t-blue-600 animate-spin mb-6"></div>
+              <h2 className="text-xl font-bold text-slate-800 mb-2">Importation en cours...</h2>
+              <p className="text-slate-500 text-center max-w-md">
+                Votre fichier est en cours de traitement. Cette opération peut prendre plusieurs minutes pour les fichiers volumineux.
+              </p>
+              <p className="text-sm text-blue-600 mt-4 flex items-center gap-2">
+                <svg className="w-4 h-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+                  <circle cx="12" cy="12" r="10"/>
+                  <path d="M12 6v6l4 2"/>
+                </svg>
+                Ne fermez pas cette page
+              </p>
+            </div>
+          </div>
+        </div>
+      )}
+
       {importResult && (
-        <div className="mb-6 p-6 bg-white border border-gray-200 rounded-lg shadow-md">
-          <div className="flex justify-between items-center mb-4">
-            <h2 className="text-xl font-semibold text-gray-800">Résultats de l'importation CSV</h2>
-            <Button
-              variant="outline"
-              size="sm"
-              onClick={() => setImportResult(null)}
-            >
-              Fermer
-            </Button>
+        <div className="mb-8 card-premium overflow-hidden animate-fade-in">
+          {/* Header with gradient accent */}
+          <div className="relative">
+            <div className="absolute top-0 left-0 right-0 h-1.5 bg-gradient-to-r from-emerald-500 via-blue-500 to-violet-500"></div>
+            <div className="p-6 border-b border-slate-100">
+              <div className="flex justify-between items-center">
+                <div className="flex items-center gap-4">
+                  <div className="w-12 h-12 rounded-xl bg-gradient-to-br from-emerald-500 to-emerald-600 flex items-center justify-center text-white shadow-lg shadow-emerald-500/30">
+                    <svg xmlns="http://www.w3.org/2000/svg" className="w-6 h-6" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                      <path d="M14.5 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V7.5L14.5 2z"/><polyline points="14 2 14 8 20 8"/><path d="m9 15 2 2 4-4"/>
+                    </svg>
+                  </div>
+                  <div>
+                    <h2 className="text-xl font-bold text-slate-800">Résultats de l'importation</h2>
+                    <p className="text-sm text-slate-500">Fichier CSV/XLSX traité avec succès</p>
+                  </div>
+                </div>
+                <button
+                  onClick={() => setImportResult(null)}
+                  className="w-10 h-10 rounded-xl bg-slate-100 hover:bg-slate-200 flex items-center justify-center text-slate-500 hover:text-slate-700 transition-all"
+                >
+                  <svg xmlns="http://www.w3.org/2000/svg" className="w-5 h-5" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                    <line x1="18" x2="6" y1="6" y2="18"/><line x1="6" x2="18" y1="6" y2="18"/>
+                  </svg>
+                </button>
+              </div>
+            </div>
           </div>
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-4 mb-4">
-            <div className="p-4 bg-blue-50 rounded-md">
-              <p className="text-sm font-medium text-blue-700">Total des enregistrements traités</p>
-              <p className="text-2xl font-bold text-blue-900">{importResult.totalRecords}</p>
+
+          {/* Stats Grid */}
+          <div className="p-6">
+            <div className="grid grid-cols-1 md:grid-cols-3 gap-4 mb-6">
+              {/* Total Records */}
+              <div className="p-5 rounded-2xl bg-gradient-to-br from-blue-50 to-blue-100/50 border border-blue-100">
+                <div className="flex items-center gap-3 mb-2">
+                  <div className="w-10 h-10 rounded-lg bg-blue-500 flex items-center justify-center text-white">
+                    <svg xmlns="http://www.w3.org/2000/svg" className="w-5 h-5" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                      <path d="M14.5 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V7.5L14.5 2z"/><polyline points="14 2 14 8 20 8"/>
+                    </svg>
+                  </div>
+                  <span className="text-sm font-medium text-blue-700">Total traité</span>
+                </div>
+                <p className="text-3xl font-extrabold text-blue-900">{importResult.totalRecords}</p>
+                <p className="text-xs text-blue-600 mt-1">enregistrements</p>
+              </div>
+
+              {/* Successful */}
+              <div className="p-5 rounded-2xl bg-gradient-to-br from-emerald-50 to-emerald-100/50 border border-emerald-100">
+                <div className="flex items-center gap-3 mb-2">
+                  <div className="w-10 h-10 rounded-lg bg-emerald-500 flex items-center justify-center text-white">
+                    <svg xmlns="http://www.w3.org/2000/svg" className="w-5 h-5" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                      <path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"/><polyline points="22 4 12 14.01 9 11.01"/>
+                    </svg>
+                  </div>
+                  <span className="text-sm font-medium text-emerald-700">Réussies</span>
+                </div>
+                <p className="text-3xl font-extrabold text-emerald-900">{importResult.successfulImports}</p>
+                <p className="text-xs text-emerald-600 mt-1">importations</p>
+              </div>
+
+              {/* Failed */}
+              <div className="p-5 rounded-2xl bg-gradient-to-br from-rose-50 to-rose-100/50 border border-rose-100">
+                <div className="flex items-center gap-3 mb-2">
+                  <div className="w-10 h-10 rounded-lg bg-rose-500 flex items-center justify-center text-white">
+                    <svg xmlns="http://www.w3.org/2000/svg" className="w-5 h-5" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                      <circle cx="12" cy="12" r="10"/><line x1="15" x2="9" y1="9" y2="15"/><line x1="9" x2="15" y1="9" y2="15"/>
+                    </svg>
+                  </div>
+                  <span className="text-sm font-medium text-rose-700">Échouées</span>
+                </div>
+                <p className="text-3xl font-extrabold text-rose-900">{importResult.failedImports}</p>
+                <p className="text-xs text-rose-600 mt-1">erreurs</p>
+              </div>
             </div>
-            <div className="p-4 bg-green-50 rounded-md">
-              <p className="text-sm font-medium text-green-700">Importations réussies</p>
-              <p className="text-2xl font-bold text-green-900">{importResult.successfulImports}</p>
+
+            {/* Progress Bar */}
+            <div className="mb-6 p-5 rounded-2xl bg-slate-50 border border-slate-100">
+              <div className="flex items-center justify-between mb-3">
+                <span className="text-sm font-semibold text-slate-700">Taux de réussite</span>
+                <span className="text-lg font-bold text-emerald-600">
+                  {importResult.totalRecords > 0
+                    ? `${((importResult.successfulImports / importResult.totalRecords) * 100).toFixed(1)}%`
+                    : '0%'}
+                </span>
+              </div>
+              <div className="w-full h-3 bg-slate-200 rounded-full overflow-hidden">
+                <div
+                  className="h-full bg-gradient-to-r from-emerald-500 to-emerald-400 rounded-full transition-all duration-1000 ease-out"
+                  style={{
+                    width: `${
+                      importResult.totalRecords > 0
+                        ? (importResult.successfulImports / importResult.totalRecords) * 100
+                        : 0
+                    }%`
+                  }}
+                ></div>
+              </div>
             </div>
-            <div className="p-4 bg-red-50 rounded-md">
-              <p className="text-sm font-medium text-red-700">Importations échouées</p>
-              <p className="text-2xl font-bold text-red-900">{importResult.failedImports}</p>
-            </div>
-          </div>
-          <div className="mb-4">
-            <p className="text-sm font-medium text-gray-600">Taux de réussite</p>
-            <div className="w-full bg-gray-200 rounded-full h-2.5 mt-2">
-              <div
-                className="bg-green-600 h-2.5 rounded-full"
-                style={{
-                  width: `${
-                    importResult.totalRecords > 0
-                      ? (importResult.successfulImports / importResult.totalRecords) * 100
-                      : 0
-                  }%`
-                }}
-              ></div>
-            </div>
-            <p className="text-sm text-gray-500 mt-1">
-              {importResult.totalRecords > 0
-                ? `${((importResult.successfulImports / importResult.totalRecords) * 100).toFixed(1)}%`
-                : '0%'} d'enregistrements importés avec succès
-            </p>
-          </div>
-          <div className="border-t pt-4">
-            <h3 className="text-lg font-semibold text-gray-700 mb-2">Détails des échecs</h3>
-            <ul className="list-disc pl-5 text-gray-600 space-y-1">
-              <li>Numéros de téléphone en double: {importResult.duplicatePhoneNumbers}</li>
-              <li>Numéros de client manquants: {importResult.failedDueToMissingNumClient}</li>
-              <li>Numéros de client en double: {importResult.failedDueToDuplicateNumClient}</li>
-              <li>Numéros de téléphone manquants: {importResult.failedDueToInvalidPhone}</li>
-              <li>Emails invalides: {importResult.failedDueToInvalidEmail}</li>
-              <li>Emails en double: {importResult.failedDueToDuplicateEmail}</li>
-              <li>Autres erreurs: {importResult.failedDueToOtherErrors}</li>
-            </ul>
+
+            {/* Failure Details */}
+            {importResult.failedImports > 0 && (
+              <div className="p-5 rounded-2xl bg-amber-50/50 border border-amber-100">
+                <h3 className="text-sm font-bold text-amber-800 mb-4 flex items-center gap-2">
+                  <svg xmlns="http://www.w3.org/2000/svg" className="w-5 h-5" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                    <circle cx="12" cy="12" r="10"/><line x1="12" x2="12" y1="8" y2="12"/><line x1="12" x2="12.01" y1="16" y2="16"/>
+                  </svg>
+                  Détails des échecs
+                </h3>
+                <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-3">
+                  {importResult.duplicatePhoneNumbers > 0 && (
+                    <div className="flex items-center gap-2 text-sm bg-white px-3 py-2 rounded-lg border border-amber-200">
+                      <span className="w-6 h-6 rounded-full bg-amber-100 text-amber-700 flex items-center justify-center text-xs font-bold">{importResult.duplicatePhoneNumbers}</span>
+                      <span className="text-slate-600">Tél. en double</span>
+                    </div>
+                  )}
+                  {importResult.failedDueToMissingNumClient > 0 && (
+                    <div className="flex items-center gap-2 text-sm bg-white px-3 py-2 rounded-lg border border-amber-200">
+                      <span className="w-6 h-6 rounded-full bg-amber-100 text-amber-700 flex items-center justify-center text-xs font-bold">{importResult.failedDueToMissingNumClient}</span>
+                      <span className="text-slate-600">N° client manquant</span>
+                    </div>
+                  )}
+                  {importResult.failedDueToDuplicateNumClient > 0 && (
+                    <div className="flex items-center gap-2 text-sm bg-white px-3 py-2 rounded-lg border border-amber-200">
+                      <span className="w-6 h-6 rounded-full bg-amber-100 text-amber-700 flex items-center justify-center text-xs font-bold">{importResult.failedDueToDuplicateNumClient}</span>
+                      <span className="text-slate-600">N° client en double</span>
+                    </div>
+                  )}
+                  {importResult.failedDueToInvalidPhone > 0 && (
+                    <div className="flex items-center gap-2 text-sm bg-white px-3 py-2 rounded-lg border border-amber-200">
+                      <span className="w-6 h-6 rounded-full bg-amber-100 text-amber-700 flex items-center justify-center text-xs font-bold">{importResult.failedDueToInvalidPhone}</span>
+                      <span className="text-slate-600">Tél. invalide</span>
+                    </div>
+                  )}
+                  {importResult.failedDueToInvalidEmail > 0 && (
+                    <div className="flex items-center gap-2 text-sm bg-white px-3 py-2 rounded-lg border border-amber-200">
+                      <span className="w-6 h-6 rounded-full bg-amber-100 text-amber-700 flex items-center justify-center text-xs font-bold">{importResult.failedDueToInvalidEmail}</span>
+                      <span className="text-slate-600">Email invalide</span>
+                    </div>
+                  )}
+                  {importResult.failedDueToDuplicateEmail > 0 && (
+                    <div className="flex items-center gap-2 text-sm bg-white px-3 py-2 rounded-lg border border-amber-200">
+                      <span className="w-6 h-6 rounded-full bg-amber-100 text-amber-700 flex items-center justify-center text-xs font-bold">{importResult.failedDueToDuplicateEmail}</span>
+                      <span className="text-slate-600">Email en double</span>
+                    </div>
+                  )}
+
+
+                  {importResult.failedDueToOtherErrors > 0 && (
+                    <div className="flex flex-col gap-2 text-sm bg-white px-3 py-2 rounded-lg border border-amber-200 col-span-full">
+                      <div className="flex items-center gap-2">
+                        <span className="w-6 h-6 rounded-full bg-amber-100 text-amber-700 flex items-center justify-center text-xs font-bold">{importResult.failedDueToOtherErrors}</span>
+                        <span className="text-slate-600">Autres erreurs</span>
+                      </div>
+                      {importResult.otherErrorsDetails && importResult.otherErrorsDetails.length > 0 && (
+                        <ul className="list-disc pl-8 text-xs text-slate-500 mt-1 space-y-1">
+                          {importResult.otherErrorsDetails.map((err, idx) => (
+                            <li key={idx}>{err}</li>
+                          ))}
+                        </ul>
+                      )}
+                    </div>
+                  )}
+                </div>
+              </div>
+            )}
           </div>
         </div>
       )}

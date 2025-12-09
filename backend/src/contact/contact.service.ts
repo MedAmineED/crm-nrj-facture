@@ -33,6 +33,7 @@ interface ImportResult {
   failedDueToInvalidEmail: number;
   failedDueToDuplicateEmail: number;
   failedDueToOtherErrors: number;
+  otherErrorsDetails: string[];
 }
 
 @Injectable()
@@ -338,13 +339,9 @@ export class ContactService {
 
     const importResult: ImportResult = this.initializeImportResult();
 
-    // Pre-fetch existing phone numbers and client numbers for duplicate checking
-    console.time('Pre-fetch existing data');
-    const [existingPhoneNumbers, existingClientNumbers] = await Promise.all([
-      this.getExistingPhoneNumbers(),
-      this.getExistingClientNumbers(),
-    ]);
-    console.timeEnd('Pre-fetch existing data');
+    // Pre-fetch removed for performance optimization (duplicates allowed)
+    const existingPhoneNumbers = new Set<string>();
+    const existingClientNumbers = new Set<string>();
 
     const processedInBatch = {
       phoneNumbers: new Set<string>(),
@@ -383,6 +380,96 @@ export class ContactService {
     console.timeEnd('Total Import Time');
     console.log('Import completed with results:', importResult);
     return importResult;
+  }
+
+  /// Async version for large files with progress tracking
+  async importContactsFromFileAsync(
+    file: Express.Multer.File,
+    columnMapping: Record<string, string>,
+    profile: string,
+    status: string = 'active',
+    jobId: string,
+    progressService: any, // ImportProgressService
+  ): Promise<void> {
+    console.log(`Starting async file import for job: ${jobId}`);
+    console.time(`Total Import Time - ${jobId}`);
+
+    const { isCSV, isXLSX } = this.detectFileType(file);
+    if (!isCSV && !isXLSX) {
+      progressService.failJob(jobId, 'Invalid file format. Please upload a CSV or XLSX file');
+      return;
+    }
+
+    const parsedColumnMapping = this.parseColumnMapping(columnMapping);
+    try {
+      this.validateColumnMapping(parsedColumnMapping);
+    } catch (error) {
+      progressService.failJob(jobId, error.message);
+      return;
+    }
+
+    const importResult: ImportResult = this.initializeImportResult();
+
+    // Pre-fetch removed for performance optimization (duplicates allowed)
+    const existingPhoneNumbers = new Set<string>();
+    const existingClientNumbers = new Set<string>();
+
+    const processedInBatch = {
+      phoneNumbers: new Set<string>(),
+      clientNumbers: new Set<string>(),
+    };
+
+    // Set job to processing status
+    progressService.updateJob(jobId, { status: 'processing' });
+
+    try {
+      // Use existing processing methods - progress will be updated after completion
+      if (isXLSX) {
+        await this.processXLSXStream(
+          file,
+          parsedColumnMapping,
+          importResult,
+          existingPhoneNumbers,
+          existingClientNumbers,
+          processedInBatch,
+          profile,
+          status,
+        );
+      } else {
+        await this.processCSVStream(
+          file,
+          parsedColumnMapping,
+          importResult,
+          existingPhoneNumbers,
+          existingClientNumbers,
+          processedInBatch,
+          profile,
+          status,
+        );
+      }
+
+      // Mark job as completed
+      progressService.completeJob(jobId, {
+        totalRecords: importResult.totalRecords,
+        processedRecords: importResult.totalRecords,
+        successfulImports: importResult.successfulImports,
+        failedImports: importResult.failedImports,
+        duplicatePhoneNumbers: importResult.duplicatePhoneNumbers,
+        failedDueToMissingNumClient: importResult.failedDueToMissingNumClient,
+        failedDueToDuplicateNumClient: importResult.failedDueToDuplicateNumClient,
+        failedDueToInvalidPhone: importResult.failedDueToInvalidPhone,
+        failedDueToInvalidEmail: importResult.failedDueToInvalidEmail,
+        failedDueToDuplicateEmail: importResult.failedDueToDuplicateEmail,
+        failedDueToOtherErrors: importResult.failedDueToOtherErrors,
+      });
+
+    } catch (error) {
+      console.error('File processing error:', error);
+      progressService.failJob(jobId, `Error processing file: ${error.message}`);
+    }
+
+    console.timeEnd(`Total Import Time - ${jobId}`);
+    console.log('Async import completed with results:', importResult);
   }
 
   private async processCSVStream(
@@ -507,7 +594,7 @@ export class ContactService {
             batch.push(contactDto);
 
             // Add to processed sets to prevent duplicates within the same import
-            processedInBatch.phoneNumbers.add(contactDto.numTel);
+            // processedInBatch.phoneNumbers.add(contactDto.numTel);
             // REMOVED: Don't track client numbers anymore - duplicates are allowed
             // processedInBatch.clientNumbers.add(contactDto.num_client);
           } else {
@@ -574,14 +661,14 @@ export class ContactService {
         return acc;
       }, {} as Record<string, CreateContactDto>);
 
-      for (const [num_client, contact] of Object.entries(uniqueClients)) {
-        await this.clientService.createOrUpdate(
-          num_client,
-          contact.profile || defaultProfile,      // Use contact's profile or default
-          contact.status || defaultStatus,        // Use contact's status or default
-          contact.raisonSociale,
-        );
-      }
+      const clientsData = Object.values(uniqueClients).map((contact) => ({
+        num_client: contact.num_client,
+        profile: contact.profile || defaultProfile,
+        status: contact.status || defaultStatus,
+        raisonSociale: contact.raisonSociale,
+      }));
+
+      await this.clientService.createOrUpdateBatch(clientsData);
 
       // Step 2: Use bulk insert for contacts
       const contacts = batch.map((dto) => this.contactRepository.create(dto));
@@ -653,29 +740,28 @@ export class ContactService {
     existingClientNumbers: Set<string>,
     processedInBatch: { phoneNumbers: Set<string>; clientNumbers: Set<string> },
   ): { isValid: boolean; error?: string } {
-    if (!contactDto.numTel) {
-      return { isValid: false, error: 'MISSING_PHONE' };
-    }
+    // if (!contactDto.numTel) {
+    //   return { isValid: false, error: 'MISSING_PHONE' };
+    // }
 
     if (!contactDto.num_client) {
       return { isValid: false, error: 'MISSING_CLIENT_NUMBER' };
     }
 
-    if (
-      existingPhoneNumbers.has(contactDto.numTel) ||
-      processedInBatch.phoneNumbers.has(contactDto.numTel)
-    ) {
-      return { isValid: false, error: 'DUPLICATE_PHONE' };
-    }
+    // Relaxed validation: Allow duplicates and invalid formats
+    // if (
+    //   existingPhoneNumbers.has(contactDto.numTel) ||
+    //   processedInBatch.phoneNumbers.has(contactDto.numTel)
+    // ) {
+    //   return { isValid: false, error: 'DUPLICATE_PHONE' };
+    // }
 
-    // REMOVED: Duplicate client number check - multiple contacts can have same num_client
-
-    if (contactDto.email) {
-      const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-      if (!emailRegex.test(contactDto.email)) {
-        return { isValid: false, error: 'INVALID_EMAIL' };
-      }
-    }
+    // if (contactDto.email) {
+    //   const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+    //   if (!emailRegex.test(contactDto.email)) {
+    //     return { isValid: false, error: 'INVALID_EMAIL' };
+    //   }
+    // }
 
     return { isValid: true };
   }
@@ -728,32 +814,7 @@ export class ContactService {
     return createContactDto;
   }
 
-  private handleValidationError(
-    error: string,
-    importResult: ImportResult,
-  ): void {
-    importResult.failedImports++;
 
-    switch (error) {
-      case 'MISSING_PHONE':
-        importResult.failedDueToInvalidPhone++;
-        break;
-      case 'MISSING_CLIENT_NUMBER':
-        importResult.failedDueToMissingNumClient++;
-        break;
-      case 'DUPLICATE_PHONE':
-        importResult.duplicatePhoneNumbers++;
-        break;
-      case 'DUPLICATE_CLIENT_NUMBER':
-        importResult.failedDueToDuplicateNumClient++;
-        break;
-      case 'INVALID_EMAIL':
-        importResult.failedDueToInvalidEmail++;
-        break;
-      default:
-        importResult.failedDueToOtherErrors++;
-    }
-  }
 
   // Helper methods remain the same...
   private detectFileType(file: Express.Multer.File) {
@@ -783,15 +844,46 @@ export class ContactService {
   }
 
   private validateColumnMapping(columnMapping: Record<string, string>): void {
-    if (!columnMapping.numTel) {
-      throw new BadRequestException(
-        'Missing mapping for required field: numTel',
-      );
-    }
+    // if (!columnMapping.numTel) {
+    //   throw new BadRequestException(
+    //     'Missing mapping for required field: numTel',
+    //   );
+    // }
     if (!columnMapping.num_client) {
       throw new BadRequestException(
         'Missing mapping for required field: num_client',
       );
+    }
+  }
+
+  private handleValidationError(
+    error: string,
+    importResult: ImportResult,
+  ): void {
+    importResult.failedImports++;
+
+    switch (error) {
+      case 'MISSING_PHONE':
+        importResult.failedDueToInvalidPhone++;
+        break;
+      case 'MISSING_CLIENT_NUMBER':
+        importResult.failedDueToMissingNumClient++;
+        break;
+      case 'DUPLICATE_PHONE':
+        importResult.duplicatePhoneNumbers++;
+        break;
+      case 'DUPLICATE_CLIENT_NUMBER':
+        importResult.failedDueToDuplicateNumClient++;
+        break;
+      case 'INVALID_EMAIL':
+        importResult.failedDueToInvalidEmail++;
+        break;
+      default:
+        importResult.failedDueToOtherErrors++;
+        // Store unique error messages to avoid flooding
+        if (!importResult.otherErrorsDetails.includes(error)) {
+          importResult.otherErrorsDetails.push(error);
+        }
     }
   }
 
@@ -807,6 +899,7 @@ export class ContactService {
       failedDueToInvalidEmail: 0,
       failedDueToDuplicateEmail: 0,
       failedDueToOtherErrors: 0,
+      otherErrorsDetails: [],
     };
   }
 }

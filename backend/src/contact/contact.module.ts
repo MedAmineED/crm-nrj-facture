@@ -5,6 +5,7 @@ import { Contact } from './entities/contact.entity';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { UserContactAssignment } from '../admin/entities/user-contact-assignment.entity';
 import { ClientModule } from '../client/client.module';
+import { ImportProgressService } from './import-progress.service';
 
 @Module({
   imports: [
@@ -12,6 +13,6 @@ import { ClientModule } from '../client/client.module';
     ClientModule,
   ],
   controllers: [ContactController],
-  providers: [ContactService],
+  providers: [ContactService, ImportProgressService],
 })
 export class ContactModule { }

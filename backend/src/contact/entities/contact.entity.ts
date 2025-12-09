@@ -23,10 +23,10 @@ export class Contact {
   @Column({ length: 100 })
   fonction: string;
 
-  @Column({ length: 100, unique: true })
+  @Column({ length: 100, unique: false })
   email: string;
 
-  @Column({ name: 'num_tel', length: 20, unique: true })
+  @Column({ name: 'num_tel', length: 20, unique: false, nullable: true })
   numTel: string;
 
   // Many Contacts can belong to one Client
