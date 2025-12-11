@@ -62,8 +62,21 @@ const MesLeads: React.FC = () => {
     const [page, setPage] = useState(1);
     const [limit] = useState(25);
 
-    // Dynamic status options extracted from all assignments
-    const statusOptions = useMemo(() => {
+    // Static status options for editing
+    const STATIC_STATUS_OPTIONS = [
+        'Nouveau',
+        'RDV Pris',
+        'A rappeler',
+        'En négociation',
+        'Devis envoyé',
+        'Converti',
+        'Pas intéressé',
+        'Mort',
+        'Injoignable'
+    ];
+
+    // Dynamic status options for filtering
+    const filterStatusOptions = useMemo(() => {
         const statuses = allAssignments
             .map(a => a.status)
             .filter((s): s is string => !!s);
@@ -249,7 +262,7 @@ const MesLeads: React.FC = () => {
                                     className="w-full px-2.5 py-1.5 text-xs border border-slate-200 rounded-lg focus:ring-2 focus:ring-primary-500 focus:border-primary-500 bg-white"
                                 >
                                     <option value="">Tous</option>
-                                    {statusOptions.map(s => (
+                                    {filterStatusOptions.map(s => (
                                         <option key={s} value={s}>{s}</option>
                                     ))}
                                 </select>
@@ -377,7 +390,7 @@ const MesLeads: React.FC = () => {
             {/* Status Legend */}
             <div className="mb-4 p-2.5 bg-white rounded-xl border border-slate-100 shadow-sm">
                 <div className="flex flex-wrap gap-1.5">
-                    {statusOptions.map(s => (
+                    {filterStatusOptions.map(s => (
                         <span key={s} className={`px-2 py-0.5 rounded-full text-[9px] font-semibold border ${getStatusStyle(s)}`}>
                             {s}
                         </span>
@@ -438,7 +451,7 @@ const MesLeads: React.FC = () => {
                                                     onChange={(e) => setEditStatus(e.target.value)}
                                                     className="px-2 py-1 text-xs border border-slate-200 rounded-lg focus:ring-2 focus:ring-primary-500 bg-white"
                                                 >
-                                                    {statusOptions.map(s => (
+                                                    {STATIC_STATUS_OPTIONS.map(s => (
                                                         <option key={s} value={s}>{s}</option>
                                                     ))}
                                                 </select>
