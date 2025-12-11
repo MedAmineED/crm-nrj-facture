@@ -131,45 +131,78 @@ const Modal = ({ isOpen, token, onClose, onFilesSelected }: ModalProps) => {
   if (!isOpen) return null;
 
   return (
-    <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
-      <div className="bg-white rounded-lg p-6 w-full max-w-2xl">
-        <h2 className="text-xl font-semibold mb-4">Importer des fichiers PDF</h2>
-        <input
-          type="file"
-          multiple
-          accept="application/pdf"
-          onChange={handleFileChange}
-          className="mb-4 w-full"
-          disabled={isUploading}
-        />
-        {selectedFiles.length > 0 && (
-          <div className="mb-4">
-            <p>Sélectionnés : {selectedFiles.length} fichiers PDF</p>
-            <div className="w-full bg-gray-200 rounded-full h-2.5">
-              <div
-                className="bg-blue-600 h-2.5 rounded-full"
-                style={{ width: `${uploadProgress}%` }}
-              ></div>
-            </div>
-            <p className="text-sm text-gray-600">{Math.round(uploadProgress)}% Téléchargés</p>
-          </div>
-        )}
-        {error && <p className="text-red-500 mb-4">{error}</p>}
-        <div className="flex justify-end gap-2">
-          <Button
-            variant="outline"
+    <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-50 p-4">
+      <div className="bg-white rounded-xl shadow-2xl max-w-2xl w-full overflow-hidden">
+        <div className="px-6 py-4 border-b border-slate-200 flex justify-between items-center">
+          <h2 className="text-lg font-bold text-slate-800">Importer des fichiers PDF</h2>
+          <button 
             onClick={onClose}
-            disabled={isUploading}
-          >
-            Annuler
-          </Button>
-          <Button
-            variant="primary"
-            onClick={handleSave}
-            disabled={isUploading || selectedFiles.length === 0}
-          >
-            {isUploading ? 'Téléchargement...' : 'Enregistrer PDF'}
-          </Button>
+            className="text-slate-400 hover:text-slate-600 text-2xl font-light"
+          >×</button>
+        </div>
+        
+        <div className="p-6">
+          <div className="mb-6">
+            <label className="block w-full cursor-pointer border-2 border-dashed border-slate-300 rounded-xl p-8 text-center hover:border-primary-500 hover:bg-slate-50 transition-colors">
+              <input
+                type="file"
+                multiple
+                accept="application/pdf"
+                onChange={handleFileChange}
+                className="hidden"
+                disabled={isUploading}
+              />
+              <div className="flex flex-col items-center gap-2">
+                <svg xmlns="http://www.w3.org/2000/svg" className="h-10 w-10 text-slate-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M7 16a4 4 0 01-.88-7.903A5 5 0 1115.9 6L16 6a5 5 0 011 9.9M15 13l-3-3m0 0l-3 3m3-3v12" />
+                </svg>
+                <span className="text-sm font-medium text-slate-600">
+                  {selectedFiles.length > 0 
+                    ? `${selectedFiles.length} fichier(s) sélectionné(s)` 
+                    : 'Cliquez pour sélectionner des fichiers PDF'}
+                </span>
+                <span className="text-xs text-slate-400">ou glissez-déposez ici</span>
+              </div>
+            </label>
+          </div>
+
+          {selectedFiles.length > 0 && (
+            <div className="mb-6">
+              <div className="flex justify-between text-xs mb-1">
+                <span className="font-medium text-slate-700">Progression</span>
+                <span className="text-slate-500">{Math.round(uploadProgress)}%</span>
+              </div>
+              <div className="w-full bg-slate-100 rounded-full h-2">
+                <div
+                  className="bg-primary-600 h-2 rounded-full transition-all duration-300"
+                  style={{ width: `${uploadProgress}%` }}
+                ></div>
+              </div>
+            </div>
+          )}
+
+          {error && (
+            <div className="mb-4 p-3 rounded-lg bg-red-50 text-red-700 text-sm border border-red-200">
+              {error}
+            </div>
+          )}
+          
+          <div className="flex justify-end gap-2">
+            <button
+              onClick={onClose}
+              disabled={isUploading}
+              className="px-4 py-2 text-xs font-medium rounded-lg bg-slate-100 text-slate-700 hover:bg-slate-200 border border-slate-200"
+            >
+              Annuler
+            </button>
+            <button
+              onClick={handleSave}
+              disabled={isUploading || selectedFiles.length === 0}
+              className="px-4 py-2 text-xs font-medium rounded-lg bg-primary-600 text-white hover:bg-primary-700 disabled:opacity-50 disabled:cursor-not-allowed"
+            >
+              {isUploading ? 'Téléchargement...' : 'Importer les fichiers'}
+            </button>
+          </div>
         </div>
       </div>
     </div>
@@ -226,129 +259,152 @@ const EditModal = ({ isOpen, onClose, invoice, onUpdate, token }: EditModalProps
   if (!isOpen || !invoice) return null;
 
   return (
-    <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
-      <div className="bg-white rounded-lg p-6 w-full max-w-2xl">
-        <h2 className="text-xl font-semibold mb-4">Modifier la Facture</h2>
-        <div className="grid grid-cols-2 gap-4">
-          <div>
-            <label className="block text-sm font-medium">Type</label>
-            <input
-              type="text"
-              name="type_facture"
-              value={formData.type_facture || ''}
-              onChange={handleChange}
-              className="mt-1 block w-full border rounded p-2"
-            />
-          </div>
-          <div>
-            <label className="block text-sm font-medium">Montant TTC</label>
-            <input
-              type="number"
-              name="montant_ttc"
-              value={formData.montant_ttc || ''}
-              onChange={handleChange}
-              className="mt-1 block w-full border rounded p-2"
-            />
-          </div>
-          <div>
-            <label className="block text-sm font-medium">Numéro Client</label>
-            <input
-              type="text"
-              name="num_client"
-              value={formData.num_client || ''}
-              onChange={handleChange}
-              className="mt-1 block w-full border rounded p-2"
-            />
-          </div>
-          <div>
-            <label className="block text-sm font-medium">SIRET</label>
-            <input
-              type="text"
-              name="siret"
-              value={formData.siret || ''}
-              onChange={handleChange}
-              className="mt-1 block w-full border rounded p-2"
-            />
-          </div>
-          <div>
-            <label className="block text-sm font-medium">Code NAF</label>
-            <input
-              type="text"
-              name="code_naf"
-              value={formData.code_naf || ''}
-              onChange={handleChange}
-              className="mt-1 block w-full border rounded p-2"
-            />
-          </div>
-          <div>
-            <label className="block text-sm font-medium">Adresse du Site</label>
-            <input
-              type="text"
-              name="adresse_site"
-              value={formData.adresse_site || ''}
-              onChange={handleChange}
-              className="mt-1 block w-full border rounded p-2"
-            />
-          </div>
-          <div>
-            <label className="block text-sm font-medium">Code Postal</label>
-            <input
-              type="text"
-              name="code_postal"
-              value={formData.code_postal || ''}
-              onChange={handleChange}
-              className="mt-1 block w-full border rounded p-2"
-            />
-          </div>
-          <div>
-            <label className="block text-sm font-medium">Échéance</label>
-            <input
-              type="date"
-              name="echeance"
-              value={formData.echeance ? new Date(formData.echeance).toISOString().split('T')[0] : ''}
-              onChange={handleChange}
-              className="mt-1 block w-full border rounded p-2"
-            />
-          </div>
-          <div>
-            <label className="block text-sm font-medium">PDL/PCE</label>
-            <input
-              type="text"
-              name="pdl"
-              value={formData.pdl || ''}
-              onChange={handleChange}
-              className="mt-1 block w-full border rounded p-2"
-            />
-          </div>
-          <div>
-            <label className="block text-sm font-medium">Consommation Annuelle</label>
-            <input
-              type="text"
-              name="conso_annuelle"
-              value={formData.conso_annuelle || ''}
-              onChange={handleChange}
-              className="mt-1 block w-full border rounded p-2"
-            />
-          </div>
-          <div>
-            <label className="block text-sm font-medium">Prix Unitaire</label>
-            <input
-              type="number"
-              name="prix_unitaire"
-              value={formData.prix_unitaire || ''}
-              onChange={handleChange}
-              className="mt-1 block w-full border rounded p-2"
-            />
-          </div>
+    <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-50 p-4">
+      <div className="bg-white rounded-xl shadow-2xl max-w-2xl w-full overflow-hidden max-h-[90vh] flex flex-col">
+        <div className="px-6 py-4 border-b border-slate-200 flex justify-between items-center">
+          <h2 className="text-lg font-bold text-slate-800">Modifier la Facture</h2>
+          <button 
+            onClick={onClose}
+            className="text-slate-400 hover:text-slate-600 text-2xl font-light"
+          >×</button>
         </div>
-        {error && <p className="text-red-500 mt-4">{error}</p>}
-        <div className="flex justify-end gap-2 mt-4">
-          <Button variant="outline" onClick={onClose} disabled={isSubmitting}>
+        
+        <div className="p-6 overflow-y-auto">
+          <div className="grid grid-cols-2 gap-4">
+            <div>
+              <label className="block text-xs font-semibold text-slate-500 mb-1">Type</label>
+              <input
+                type="text"
+                name="type_facture"
+                value={formData.type_facture || ''}
+                onChange={handleChange}
+                className="w-full px-3 py-2 text-sm border border-slate-200 rounded-lg focus:ring-2 focus:ring-primary-500 focus:border-primary-500"
+              />
+            </div>
+            <div>
+              <label className="block text-xs font-semibold text-slate-500 mb-1">Montant TTC</label>
+              <input
+                type="number"
+                name="montant_ttc"
+                value={formData.montant_ttc || ''}
+                onChange={handleChange}
+                className="w-full px-3 py-2 text-sm border border-slate-200 rounded-lg focus:ring-2 focus:ring-primary-500 focus:border-primary-500"
+              />
+            </div>
+            <div>
+              <label className="block text-xs font-semibold text-slate-500 mb-1">Numéro Client</label>
+              <input
+                type="text"
+                name="num_client"
+                value={formData.num_client || ''}
+                onChange={handleChange}
+                className="w-full px-3 py-2 text-sm border border-slate-200 rounded-lg focus:ring-2 focus:ring-primary-500 focus:border-primary-500"
+              />
+            </div>
+            <div>
+              <label className="block text-xs font-semibold text-slate-500 mb-1">SIRET</label>
+              <input
+                type="text"
+                name="siret"
+                value={formData.siret || ''}
+                onChange={handleChange}
+                className="w-full px-3 py-2 text-sm border border-slate-200 rounded-lg focus:ring-2 focus:ring-primary-500 focus:border-primary-500"
+              />
+            </div>
+            <div>
+              <label className="block text-xs font-semibold text-slate-500 mb-1">Code NAF</label>
+              <input
+                type="text"
+                name="code_naf"
+                value={formData.code_naf || ''}
+                onChange={handleChange}
+                className="w-full px-3 py-2 text-sm border border-slate-200 rounded-lg focus:ring-2 focus:ring-primary-500 focus:border-primary-500"
+              />
+            </div>
+            <div>
+              <label className="block text-xs font-semibold text-slate-500 mb-1">Adresse du Site</label>
+              <input
+                type="text"
+                name="adresse_site"
+                value={formData.adresse_site || ''}
+                onChange={handleChange}
+                className="w-full px-3 py-2 text-sm border border-slate-200 rounded-lg focus:ring-2 focus:ring-primary-500 focus:border-primary-500"
+              />
+            </div>
+            <div>
+              <label className="block text-xs font-semibold text-slate-500 mb-1">Code Postal</label>
+              <input
+                type="text"
+                name="code_postal"
+                value={formData.code_postal || ''}
+                onChange={handleChange}
+                className="w-full px-3 py-2 text-sm border border-slate-200 rounded-lg focus:ring-2 focus:ring-primary-500 focus:border-primary-500"
+              />
+            </div>
+            <div>
+              <label className="block text-xs font-semibold text-slate-500 mb-1">Échéance</label>
+              <input
+                type="date"
+                name="echeance"
+                value={formData.echeance ? new Date(formData.echeance).toISOString().split('T')[0] : ''}
+                onChange={handleChange}
+                className="w-full px-3 py-2 text-sm border border-slate-200 rounded-lg focus:ring-2 focus:ring-primary-500 focus:border-primary-500"
+              />
+            </div>
+            <div>
+              <label className="block text-xs font-semibold text-slate-500 mb-1">PDL/PCE</label>
+              <input
+                type="text"
+                name="pdl"
+                value={formData.pdl || ''}
+                onChange={handleChange}
+                className="w-full px-3 py-2 text-sm border border-slate-200 rounded-lg focus:ring-2 focus:ring-primary-500 focus:border-primary-500"
+              />
+            </div>
+            <div>
+              <label className="block text-xs font-semibold text-slate-500 mb-1">Consommation Annuelle</label>
+              <input
+                type="text"
+                name="conso_annuelle"
+                value={formData.conso_annuelle || ''}
+                onChange={handleChange}
+                className="w-full px-3 py-2 text-sm border border-slate-200 rounded-lg focus:ring-2 focus:ring-primary-500 focus:border-primary-500"
+              />
+            </div>
+            <div>
+              <label className="block text-xs font-semibold text-slate-500 mb-1">Prix Unitaire</label>
+              <input
+                type="number"
+                name="prix_unitaire"
+                value={formData.prix_unitaire || ''}
+                onChange={handleChange}
+                className="w-full px-3 py-2 text-sm border border-slate-200 rounded-lg focus:ring-2 focus:ring-primary-500 focus:border-primary-500"
+              />
+            </div>
+          </div>
+          
+          {error && (
+            <div className="mt-4 p-3 rounded-lg bg-red-50 text-red-700 text-sm border border-red-200">
+              {error}
+            </div>
+          )}
+        </div>
+
+        <div className="px-6 py-4 border-t border-slate-100 flex justify-end gap-2">
+          <button
+            onClick={onClose}
+            disabled={isSubmitting}
+            className="px-4 py-2 text-xs font-medium rounded-lg bg-slate-100 text-slate-700 hover:bg-slate-200 border border-slate-200"
+          >
             Annuler
-          </Button>
-          <Button variant="primary" onClick={handleSubmit} disabled={isSubmitting}>
+          </button>
+          <button
+            onClick={handleSubmit}
+            disabled={isSubmitting}
+            className="px-4 py-2 text-xs font-medium rounded-lg bg-primary-600 text-white hover:bg-primary-700 disabled:opacity-50"
+          >
             {isSubmitting ? 'Enregistrement...' : 'Enregistrer'}
-          </Button>
+          </button>
         </div>
       </div>
     </div>
@@ -359,32 +415,38 @@ const DeleteModal = ({ isOpen, onClose, onConfirm, isDeleting }: DeleteModalProp
   if (!isOpen) return null;
 
   return (
-    <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
-      <div className="bg-white rounded-lg p-6 w-full max-w-md">
-        <h2 className="text-xl font-semibold mb-4">Confirmer la suppression</h2>
-        <p className="mb-4">Voulez-vous vraiment supprimer cette facture ? Cette action est irréversible.</p>
-        <div className="flex justify-end gap-2">
-          <Button
-            variant="outline"
+    <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-50 p-4">
+      <div className="bg-white rounded-xl shadow-2xl max-w-sm w-full overflow-hidden">
+        <div className="px-6 py-4 border-b border-slate-200">
+          <h2 className="text-lg font-bold text-slate-800">Confirmer la suppression</h2>
+        </div>
+        
+        <div className="p-6">
+          <p className="text-sm text-slate-600">Voulez-vous vraiment supprimer cette facture ? Cette action est irréversible.</p>
+        </div>
+        
+        <div className="px-6 py-4 border-t border-slate-100 flex gap-2 justify-end">
+          <button
             onClick={onClose}
             disabled={isDeleting}
+            className="px-4 py-2 text-xs font-medium rounded-lg bg-slate-100 text-slate-700 hover:bg-slate-200 border border-slate-200"
           >
             Annuler
-          </Button>
-          <Button
-            className="bg-red-600 hover:bg-red-700 text-white"
+          </button>
+          <button
             onClick={onConfirm}
             disabled={isDeleting}
+            className="px-4 py-2 text-xs font-medium rounded-lg bg-red-600 text-white hover:bg-red-700 disabled:opacity-50"
           >
             {isDeleting ? 'Suppression...' : 'Supprimer'}
-          </Button>
+          </button>
         </div>
       </div>
     </div>
   );
 };
 
-export default function MyLeads() {
+export default function MyInvoices() {
   const [invoices, setInvoices] = useState<Invoice[]>([]);
   const [totalCount, setTotalCount] = useState(0);
   const [isLoading, setIsLoading] = useState(false);
@@ -605,29 +667,26 @@ export default function MyLeads() {
       id: 'actions',
       header: 'Actions',
       cell: ({ row }) => (
-        <div className="flex gap-2">
-          <Button
-            variant="outline"
-            size="sm"
+        <div className="flex gap-1.5">
+          <button
             onClick={() => handleShowPDF(row.original)}
             disabled={loadingPdf}
+            className="px-2 py-1 text-[10px] font-medium rounded-md bg-slate-100 text-slate-700 hover:bg-slate-200 border border-slate-200 disabled:opacity-50"
           >
-            {loadingPdf ? 'Loading...' : 'PDF'}
-          </Button>
-          <Button
-            variant="outline"
-            size="sm"
+            {loadingPdf ? '...' : 'PDF'}
+          </button>
+          <button
             onClick={() => handleEdit(row.original)}
+            className="px-2 py-1 text-[10px] font-medium rounded-md bg-primary-50 text-primary-600 hover:bg-primary-100 border border-primary-200"
           >
             Modifier
-          </Button>
-          <Button
-            variant="outline"
-            size="sm"
+          </button>
+          <button
             onClick={() => handleDelete(row.original.id)}
+            className="px-2 py-1 text-[10px] font-medium rounded-md bg-red-50 text-red-600 hover:bg-red-100 border border-red-200"
           >
             Supprimer
-          </Button>
+          </button>
         </div>
       ),
     },

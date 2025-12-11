@@ -18,6 +18,9 @@ export class Client {
     @Column({ name: 'raison_sociale', length: 150, nullable: true })
     raisonSociale: string;
 
+    @Column({ type: 'text', nullable: true })
+    comment: string;
+
     // One Client can have many Contacts
     @OneToMany(() => Contact, (contact) => contact.client)
     contacts: Contact[];

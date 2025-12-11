@@ -2,8 +2,9 @@ import Button from '@/components/ui/Button';
 import { DataTable } from '@/components/ui/Table';
 import type { ColumnDef } from '@tanstack/react-table';
 import React, { useState, useEffect, useCallback } from 'react';
-import { useNavigate } from 'react-router-dom';
+import { useNavigate, useSearchParams } from 'react-router-dom';
 import ClientServices, { type Client } from '@/API/ClientServices';
+import ClientAssignmentServices from '@/API/ClientAssignmentServices';
 import { useAuth } from '@/hooks/useAuth';
 import EditClientModal from '@/components/EditClientModal';
 import axios from 'axios';
@@ -20,6 +21,20 @@ type Column = ColumnDef<Client> & {
 interface FilterState {
   page: number;
   limit: number;
+  hasInvoices?: 'with' | 'without' | 'all';
+  profile?: string;
+  status?: string;
+  raisonSociale?: string;
+  num_client?: string;
+  search?: string;
+  // Invoice-based filters
+  departement?: string;
+  code_postal?: string;
+  adresse_site?: string;
+  montant_ttc_min?: number;
+  montant_ttc_max?: number;
+  conso_annuelle_min?: number;
+  conso_annuelle_max?: number;
   [key: string]: any;
 }
 
@@ -38,14 +53,72 @@ interface ImportResult {
 }
 
 const Clients = () => {
+  const [searchParams, setSearchParams] = useSearchParams();
+  const navigate = useNavigate();
+  
+  // Parse filters from URL params
+  const getInitialFilters = useCallback((): FilterState => {
+    const page = parseInt(searchParams.get('page') || '1', 10);
+    const limit = parseInt(searchParams.get('limit') || '10', 10);
+    const hasInvoices = (searchParams.get('hasInvoices') as 'with' | 'without' | 'all') || 'with';
+    
+    return {
+      page,
+      limit,
+      hasInvoices,
+      status: searchParams.get('status') || undefined,
+      raisonSociale: searchParams.get('raisonSociale') || undefined,
+      num_client: searchParams.get('num_client') || undefined,
+      departement: searchParams.get('departement') || undefined,
+      code_postal: searchParams.get('code_postal') || undefined,
+      adresse_site: searchParams.get('adresse_site') || undefined,
+      montant_ttc_min: searchParams.get('montant_ttc_min') ? Number(searchParams.get('montant_ttc_min')) : undefined,
+      montant_ttc_max: searchParams.get('montant_ttc_max') ? Number(searchParams.get('montant_ttc_max')) : undefined,
+      conso_annuelle_min: searchParams.get('conso_annuelle_min') ? Number(searchParams.get('conso_annuelle_min')) : undefined,
+      conso_annuelle_max: searchParams.get('conso_annuelle_max') ? Number(searchParams.get('conso_annuelle_max')) : undefined,
+    };
+  }, [searchParams]);
+
   const [clients, setClients] = useState<Client[]>([]);
   const [totalCount, setTotalCount] = useState(0);
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
-  const [filters, setFilters] = useState<FilterState>({ page: 1, limit: 10, hasInvoices: 'with' });
+  const [filters, setFilters] = useState<FilterState>(getInitialFilters);
+  const [isFiltersOpen, setIsFiltersOpen] = useState(() => {
+    // Open filters by default if there are active filters (other than default ones)
+    const initial = getInitialFilters();
+    return !!(initial.status || initial.raisonSociale || initial.num_client || 
+              initial.departement || initial.code_postal || initial.adresse_site ||
+              initial.montant_ttc_min || initial.montant_ttc_max || 
+              initial.conso_annuelle_min || initial.conso_annuelle_max);
+  });
   const { isAdmin, isLoading: isAuthLoading, token } = useAuth();
   const [isEditModalOpen, setIsEditModalOpen] = useState(false);
   const [selectedClient, setSelectedClient] = useState<Client | null>(null);
+
+  // Sync filters to URL
+  useEffect(() => {
+    const params = new URLSearchParams();
+    
+    // Always include page and limit
+    params.set('page', String(filters.page));
+    params.set('limit', String(filters.limit));
+    if (filters.hasInvoices) params.set('hasInvoices', filters.hasInvoices);
+    
+    // Only include non-empty filter values
+    if (filters.status) params.set('status', filters.status);
+    if (filters.raisonSociale) params.set('raisonSociale', filters.raisonSociale);
+    if (filters.num_client) params.set('num_client', filters.num_client);
+    if (filters.departement) params.set('departement', filters.departement);
+    if (filters.code_postal) params.set('code_postal', filters.code_postal);
+    if (filters.adresse_site) params.set('adresse_site', filters.adresse_site);
+    if (filters.montant_ttc_min !== undefined) params.set('montant_ttc_min', String(filters.montant_ttc_min));
+    if (filters.montant_ttc_max !== undefined) params.set('montant_ttc_max', String(filters.montant_ttc_max));
+    if (filters.conso_annuelle_min !== undefined) params.set('conso_annuelle_min', String(filters.conso_annuelle_min));
+    if (filters.conso_annuelle_max !== undefined) params.set('conso_annuelle_max', String(filters.conso_annuelle_max));
+    
+    setSearchParams(params, { replace: true });
+  }, [filters, setSearchParams]);
 
   // Import State
   const [importResult, setImportResult] = useState<ImportResult | null>(null);
@@ -54,8 +127,8 @@ const Clients = () => {
   const [selectedFile, setSelectedFile] = useState<File | null>(null);
   const [csvColumns, setCsvColumns] = useState<string[]>([]);
   const [columnMapping, setColumnMapping] = useState<Record<string, string>>({});
-  const [importJobId, setImportJobId] = useState<string | null>(null);
   const [importStatus, setImportStatus] = useState<'idle' | 'uploading' | 'processing' | 'completed' | 'failed'>('idle');
+  const [statusOptions, setStatusOptions] = useState<string[]>([]);
 
   const dbFields = [
     { value: 'num_client', label: 'Numéro Client', required: true },
@@ -72,55 +145,92 @@ const Clients = () => {
   const defaultText = (id: keyof Client, header: string): Column => ({
     accessorKey: id,
     header,
-    filterType: 'text',
-    enableColumnFilter: true,
+    enableColumnFilter: false,
   });
 
-  const navigate = useNavigate();
+  // Status color mapping (same as MesLeads)
+  const STATUS_COLORS: Record<string, string> = {
+    'nouveau': 'bg-slate-100 text-slate-700 border-slate-300',
+    'rdv pris': 'bg-blue-100 text-blue-800 border-blue-300',
+    'a rappeler': 'bg-amber-100 text-amber-800 border-amber-300',
+    'en négociation': 'bg-purple-100 text-purple-800 border-purple-300',
+    'devis envoyé': 'bg-cyan-100 text-cyan-800 border-cyan-300',
+    'converti': 'bg-emerald-100 text-emerald-800 border-emerald-300',
+    'pas intéressé': 'bg-orange-100 text-orange-800 border-orange-300',
+    'mort': 'bg-red-100 text-red-800 border-red-300',
+    'injoignable': 'bg-gray-100 text-gray-700 border-gray-300',
+  };
+
+  const getStatusStyle = (status: string) => {
+    const key = status?.toLowerCase();
+    return STATUS_COLORS[key] || 'bg-slate-100 text-slate-700 border-slate-300';
+  };
 
   const columns: Column[] = [
     {
         accessorKey: 'num_client',
-        header: 'Numéro Client',
+        header: 'N° Client',
         cell: ({ row }) => (
             <span 
-                className="text-blue-600 hover:underline cursor-pointer"
+                className="text-primary-600 hover:text-primary-700 hover:underline cursor-pointer font-medium text-xs"
                 onClick={() => navigate(`/dashboard/clients/${row.original.id}`)}
             >
                 {row.original.num_client}
             </span>
         )
     },
-    defaultText('raisonSociale', 'Raison Sociale'),
-    defaultText('status', 'Statut'),
+    {
+        accessorKey: 'raisonSociale',
+        header: 'Raison Sociale',
+        cell: ({ row }) => (
+            <span className="text-xs text-slate-700 font-medium">
+                {row.original.raisonSociale || '-'}
+            </span>
+        )
+    },
+    {
+        accessorKey: 'status',
+        header: 'Statut',
+        cell: ({ row }) => (
+            <span className={`px-2 py-0.5 rounded-full text-[10px] font-semibold border ${getStatusStyle(row.original.status)}`}>
+                {row.original.status || 'Nouveau'}
+            </span>
+        )
+    },
+    {
+        accessorKey: 'comment',
+        header: 'Commentaire',
+        cell: ({ row }) => (
+            <span className="text-xs text-slate-500 truncate max-w-[150px] block" title={row.original.comment || ''}>
+                {row.original.comment || '-'}
+            </span>
+        )
+    },
     {
       id: 'actions',
       header: 'Actions',
       cell: ({ row }) => (
-        <div className="flex gap-2">
-            <Button
-                variant="outline"
-                size="sm"
+        <div className="flex gap-1.5">
+            <button
                 onClick={() => navigate(`/dashboard/clients/${row.original.id}`)}
+                className="px-2 py-1 text-[10px] font-medium rounded-md bg-slate-100 text-slate-700 hover:bg-slate-200 border border-slate-200"
             >
                 Détails
-            </Button>
+            </button>
           {isAdmin && (
             <>
-              <Button
-                variant="outline"
-                size="sm"
+              <button
                 onClick={() => handleEdit(row.original)}
+                className="px-2 py-1 text-[10px] font-medium rounded-md bg-primary-50 text-primary-600 hover:bg-primary-100 border border-primary-200"
               >
                 Modifier
-              </Button>
-              <Button
-                variant="outline"
-                size="sm"
+              </button>
+              <button
                 onClick={() => handleDelete(row.original.id)}
+                className="px-2 py-1 text-[10px] font-medium rounded-md bg-red-50 text-red-600 hover:bg-red-100 border border-red-200"
               >
                 Supprimer
-              </Button>
+              </button>
             </>
           )}
         </div>
@@ -133,20 +243,50 @@ const Clients = () => {
     setIsLoading(true);
     setError(null);
     try {
-      const response = await ClientServices.getClients(token, filters);
-      setClients(response.clients);
-      setTotalCount(response.totalCount);
+      if (isAdmin) {
+        // Admin: fetch all clients
+        const response = await ClientServices.getClients(token, filters);
+        setClients(response.clients);
+        setTotalCount(response.totalCount);
+      } else {
+        // User: fetch only assigned clients
+        const assignments = await ClientAssignmentServices.getMyClients(token, {
+          status: filters.status,
+          raisonSociale: filters.raisonSociale,
+          num_client: filters.num_client,
+        });
+        // Transform assignments to clients
+        const clientsFromAssignments: Client[] = assignments
+          .filter(a => a.client)
+          .map(a => a.client as Client);
+        setClients(clientsFromAssignments);
+        setTotalCount(clientsFromAssignments.length);
+      }
     } catch (error) {
       console.error('Échec de la récupération des clients:', error);
       setError('Échec du chargement des clients. Veuillez réessayer.');
     } finally {
       setIsLoading(false);
     }
-  }, [filters, isAuthLoading, token]);
+  }, [filters, isAuthLoading, token, isAdmin]);
 
   useEffect(() => {
     fetchClients();
   }, [fetchClients]);
+
+  // Fetch distinct statuses for the dropdown
+  useEffect(() => {
+    const fetchStatuses = async () => {
+      if (!token) return;
+      try {
+        const statuses = await ClientServices.getDistinctStatuses(token);
+        setStatusOptions(statuses);
+      } catch (error) {
+        console.error('Error fetching statuses:', error);
+      }
+    };
+    fetchStatuses();
+  }, [token]);
 
   const handleEdit = (client: Client) => {
     setSelectedClient(client);
@@ -180,36 +320,6 @@ const Clients = () => {
 
   const handlePageSizeChange = useCallback((limit: number) => {
     setFilters(prev => ({ ...prev, limit, page: 1 }));
-  }, []);
-
-  const handleFilterChange = useCallback((newFilters: Array<{ id: string; value: any }>) => {
-    // If no filters, reset to default state (preserving page and limit)
-    if (!newFilters || newFilters.length === 0) {
-      setFilters(prev => ({ 
-        page: prev.page, 
-        limit: prev.limit,
-        hasInvoices: prev.hasInvoices // Preserve invoice filter
-      }));
-      return;
-    }
-
-    const cleanedFilters = newFilters.reduce((acc, filter) => {
-      if (filter.value !== '' && filter.value != null) {
-        // Special handling for global search
-        if (filter.id === 'global') {
-            acc['search'] = filter.value;
-        } else {
-            acc[filter.id] = filter.value;
-        }
-      }
-      return acc;
-    }, {} as Record<string, any>);
-
-    setFilters(prev => ({ 
-        ...prev, // Keep existing filters like hasInvoices
-        ...cleanedFilters, 
-        page: 1 // Reset to first page on filter change
-    }));
   }, []);
 
   // Import Handlers
@@ -388,7 +498,6 @@ const Clients = () => {
       });
 
       const { jobId } = startResponse.data;
-      setImportJobId(jobId);
       setImportStatus('processing');
 
       // Poll for progress
@@ -467,37 +576,40 @@ const Clients = () => {
   }, []);
 
   return (
-    <div className="container mx-auto py-6">
-      <div className="flex justify-between items-center mb-6">
-        <h1 className="text-2xl font-bold">Gestion des Clients</h1>
+    <div className="w-full py-2">
+      <div className="flex justify-between items-center mb-3">
+        <h1 className="text-xl font-bold text-slate-800">Clients</h1>
         <div className="flex gap-2 items-center">
-          {/* Invoice Filter Dropdown */}
-          <div className="flex items-center gap-2 mr-4">
-            <label htmlFor="invoice-filter" className="text-sm font-medium text-gray-700">
-              Factures:
-            </label>
-            <select
-              id="invoice-filter"
-              value={filters.hasInvoices || 'with'}
-              onChange={(e) => {
-                const value = e.target.value;
-                setFilters(prev => ({ ...prev, hasInvoices: value, page: 1 }));
-              }}
-              className="px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 text-sm"
-            >
-              <option value="all">Tous</option>
-              <option value="with">Avec factures</option>
-              <option value="without">Sans factures</option>
-            </select>
-          </div>
+          {/* Invoice Filter Dropdown - Admin only */}
+          {isAdmin && (
+            <div className="flex items-center gap-1.5">
+              <label htmlFor="invoice-filter" className="text-xs font-medium text-slate-600">
+                Factures:
+              </label>
+              <select
+                id="invoice-filter"
+                value={filters.hasInvoices || 'with'}
+                onChange={(e) => {
+                  const value = e.target.value as 'with' | 'without' | 'all';
+                  setFilters(prev => ({ ...prev, hasInvoices: value, page: 1 }));
+                }}
+                className="px-2 py-1 text-xs border border-slate-200 rounded-lg focus:outline-none focus:ring-1 focus:ring-primary-500 focus:border-primary-500 bg-white"
+              >
+                <option value="all">Tous</option>
+                <option value="with">Avec</option>
+                <option value="without">Sans</option>
+              </select>
+            </div>
+          )}
           {isAdmin && (
             <>
               <Button
                 variant="outline"
                 onClick={() => document.getElementById('csv-upload')?.click()}
                 disabled={isLoading}
+                className="text-xs px-3 py-1.5"
               >
-                {isLoading ? 'Traitement...' : 'Importer CSV'}
+                {isLoading ? 'Traitement...' : 'Importer'}
               </Button>
               <input
                 id="csv-upload"
@@ -512,18 +624,235 @@ const Clients = () => {
       </div>
       
       {error && (
-        <div className="mb-4 p-4 bg-red-100 border border-red-400 text-red-700 rounded">
-          {error}
-          <Button
-            variant="outline"
-            size="sm"
-            className="mt-2 ml-4"
+        <div className="mb-3 p-2 bg-red-50 border border-red-200 text-red-600 rounded-lg text-xs flex items-center justify-between">
+          <span>{error}</span>
+          <button
             onClick={() => setError(null)}
+            className="text-red-500 hover:text-red-700 font-medium"
           >
-            Fermer
-          </Button>
+            ×
+          </button>
         </div>
       )}
+
+      {/* Custom Filters Panel */}
+      <div className="mb-4 bg-white rounded-xl border border-slate-100 shadow-sm overflow-hidden">
+        {/* Filter Header - Clickable to toggle */}
+        <button
+          onClick={() => setIsFiltersOpen(!isFiltersOpen)}
+          className="w-full px-4 py-2.5 bg-gradient-to-r from-slate-50 to-white border-b border-slate-100 flex items-center justify-between hover:bg-slate-50 transition-colors"
+        >
+          <div className="flex items-center gap-2">
+            <div className="w-7 h-7 rounded-lg bg-primary-50 flex items-center justify-center">
+              <svg xmlns="http://www.w3.org/2000/svg" className="w-4 h-4 text-primary-500" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                <polygon points="22 3 2 3 10 12.46 10 19 14 21 14 12.46 22 3"/>
+              </svg>
+            </div>
+            <span className="text-sm font-semibold text-slate-700">Filtres</span>
+            {/* Active filter count badge */}
+            {(() => {
+              const activeCount = [
+                filters.status,
+                filters.raisonSociale,
+                filters.num_client,
+                filters.departement,
+                filters.code_postal,
+                filters.adresse_site,
+                filters.montant_ttc_min,
+                filters.montant_ttc_max,
+                filters.conso_annuelle_min,
+                filters.conso_annuelle_max,
+              ].filter(Boolean).length;
+              return activeCount > 0 ? (
+                <span className="ml-1 px-1.5 py-0.5 text-[10px] font-bold rounded-full bg-primary-500 text-white">
+                  {activeCount}
+                </span>
+              ) : null;
+            })()}
+          </div>
+          <div className="flex items-center gap-2">
+            {/* Reset button - prevent event bubbling */}
+            <span
+              onClick={(e) => {
+                e.stopPropagation();
+                setFilters({ page: 1, limit: filters.limit, hasInvoices: 'with' });
+              }}
+              className="text-xs font-medium text-rose-500 hover:text-rose-600 hover:bg-rose-50 px-2 py-1 rounded-md transition-colors cursor-pointer"
+            >
+              Réinitialiser
+            </span>
+            {/* Chevron icon */}
+            <svg 
+              xmlns="http://www.w3.org/2000/svg" 
+              className={`w-4 h-4 text-slate-400 transition-transform duration-200 ${isFiltersOpen ? 'rotate-180' : ''}`}
+              viewBox="0 0 24 24" 
+              fill="none" 
+              stroke="currentColor" 
+              strokeWidth="2" 
+              strokeLinecap="round" 
+              strokeLinejoin="round"
+            >
+              <polyline points="6 9 12 15 18 9"/>
+            </svg>
+          </div>
+        </button>
+        
+        {/* Filters Grid - Collapsible */}
+        <div className={`transition-all duration-200 ease-in-out overflow-hidden ${isFiltersOpen ? 'max-h-96 opacity-100' : 'max-h-0 opacity-0'}`}>
+          <div className="p-3">
+            <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-6 xl:grid-cols-8 gap-2">
+              {/* Status Filter */}
+              <div>
+                <label htmlFor="status-filter" className="block text-[10px] font-semibold text-slate-500 uppercase tracking-wide mb-1">
+                  Statut
+                </label>
+                <select
+                  id="status-filter"
+                  value={filters.status || ''}
+                  onChange={(e) => setFilters(prev => ({ ...prev, status: e.target.value || undefined, page: 1 }))}
+                  className="w-full px-2 py-1.5 text-xs border border-slate-200 rounded-lg focus:outline-none focus:ring-1 focus:ring-primary-500 focus:border-primary-500 transition-all bg-white"
+                >
+                  <option value="">Tous</option>
+                  {statusOptions.map((status) => (
+                    <option key={status} value={status}>{status}</option>
+                  ))}
+                </select>
+              </div>
+
+              {/* Raison Sociale Filter */}
+              <div>
+                <label htmlFor="raison-sociale-filter" className="block text-[10px] font-semibold text-slate-500 uppercase tracking-wide mb-1">
+                  Raison Sociale
+                </label>
+                <input
+                  id="raison-sociale-filter"
+                  type="text"
+                  placeholder="Rechercher..."
+                  value={filters.raisonSociale || ''}
+                  onChange={(e) => setFilters(prev => ({ ...prev, raisonSociale: e.target.value || undefined, page: 1 }))}
+                  className="w-full px-2 py-1.5 text-xs border border-slate-200 rounded-lg focus:outline-none focus:ring-1 focus:ring-primary-500 focus:border-primary-500 transition-all"
+                />
+              </div>
+
+              {/* Numéro Client Filter */}
+              <div>
+                <label htmlFor="num-client-filter" className="block text-[10px] font-semibold text-slate-500 uppercase tracking-wide mb-1">
+                  N° Client
+                </label>
+                <input
+                  id="num-client-filter"
+                  type="text"
+                  placeholder="Rechercher..."
+                  value={filters.num_client || ''}
+                  onChange={(e) => setFilters(prev => ({ ...prev, num_client: e.target.value || undefined, page: 1 }))}
+                  className="w-full px-2 py-1.5 text-xs border border-slate-200 rounded-lg focus:outline-none focus:ring-1 focus:ring-primary-500 focus:border-primary-500 transition-all"
+                />
+              </div>
+
+              {/* Département Filter */}
+              <div>
+                <label htmlFor="departement-filter" className="block text-[10px] font-semibold text-slate-500 uppercase tracking-wide mb-1">
+                  Département
+                </label>
+                <select
+                  id="departement-filter"
+                  value={filters.departement || ''}
+                  onChange={(e) => setFilters(prev => ({ ...prev, departement: e.target.value || undefined, page: 1 }))}
+                  className="w-full px-2 py-1.5 text-xs border border-slate-200 rounded-lg focus:outline-none focus:ring-1 focus:ring-primary-500 focus:border-primary-500 transition-all bg-white"
+                >
+                  <option value="">Tous</option>
+                  {Array.from({ length: 95 }, (_, i) => {
+                    const dept = String(i + 1).padStart(2, '0');
+                    return <option key={dept} value={dept}>{dept}</option>;
+                  })}
+                  <option value="2A">2A</option>
+                  <option value="2B">2B</option>
+                  {Array.from({ length: 5 }, (_, i) => {
+                    const dept = String(971 + i);
+                    return <option key={dept} value={dept}>{dept}</option>;
+                  })}
+                </select>
+              </div>
+
+              {/* Code Postal Filter */}
+              <div>
+                <label htmlFor="code-postal-filter" className="block text-[10px] font-semibold text-slate-500 uppercase tracking-wide mb-1">
+                  Code Postal
+                </label>
+                <input
+                  id="code-postal-filter"
+                  type="text"
+                  placeholder="75001"
+                  value={filters.code_postal || ''}
+                  onChange={(e) => setFilters(prev => ({ ...prev, code_postal: e.target.value || undefined, page: 1 }))}
+                  className="w-full px-2 py-1.5 text-xs border border-slate-200 rounded-lg focus:outline-none focus:ring-1 focus:ring-primary-500 focus:border-primary-500 transition-all"
+                />
+              </div>
+
+              {/* Adresse du Site Filter */}
+              <div>
+                <label htmlFor="adresse-site-filter" className="block text-[10px] font-semibold text-slate-500 uppercase tracking-wide mb-1">
+                  Adresse
+                </label>
+                <input
+                  id="adresse-site-filter"
+                  type="text"
+                  placeholder="Rechercher..."
+                  value={filters.adresse_site || ''}
+                  onChange={(e) => setFilters(prev => ({ ...prev, adresse_site: e.target.value || undefined, page: 1 }))}
+                  className="w-full px-2 py-1.5 text-xs border border-slate-200 rounded-lg focus:outline-none focus:ring-1 focus:ring-primary-500 focus:border-primary-500 transition-all"
+                />
+              </div>
+
+              {/* Montant TTC Min/Max */}
+              <div>
+                <label className="block text-[10px] font-semibold text-slate-500 uppercase tracking-wide mb-1">
+                  Montant (€)
+                </label>
+                <div className="flex gap-1">
+                  <input
+                    type="number"
+                    placeholder="Min"
+                    value={filters.montant_ttc_min ?? ''}
+                    onChange={(e) => setFilters(prev => ({ ...prev, montant_ttc_min: e.target.value ? Number(e.target.value) : undefined, page: 1 }))}
+                    className="w-1/2 px-1.5 py-1.5 text-xs border border-slate-200 rounded-lg focus:outline-none focus:ring-1 focus:ring-primary-500 focus:border-primary-500 transition-all"
+                  />
+                  <input
+                    type="number"
+                    placeholder="Max"
+                    value={filters.montant_ttc_max ?? ''}
+                    onChange={(e) => setFilters(prev => ({ ...prev, montant_ttc_max: e.target.value ? Number(e.target.value) : undefined, page: 1 }))}
+                    className="w-1/2 px-1.5 py-1.5 text-xs border border-slate-200 rounded-lg focus:outline-none focus:ring-1 focus:ring-primary-500 focus:border-primary-500 transition-all"
+                  />
+                </div>
+              </div>
+
+              {/* Consommation Annuelle Min/Max */}
+              <div>
+                <label className="block text-[10px] font-semibold text-slate-500 uppercase tracking-wide mb-1">
+                  Conso (kWh)
+                </label>
+                <div className="flex gap-1">
+                  <input
+                    type="number"
+                    placeholder="Min"
+                    value={filters.conso_annuelle_min ?? ''}
+                    onChange={(e) => setFilters(prev => ({ ...prev, conso_annuelle_min: e.target.value ? Number(e.target.value) : undefined, page: 1 }))}
+                    className="w-1/2 px-1.5 py-1.5 text-xs border border-slate-200 rounded-lg focus:outline-none focus:ring-1 focus:ring-primary-500 focus:border-primary-500 transition-all"
+                  />
+                  <input
+                    type="number"
+                    placeholder="Max"
+                    value={filters.conso_annuelle_max ?? ''}
+                    onChange={(e) => setFilters(prev => ({ ...prev, conso_annuelle_max: e.target.value ? Number(e.target.value) : undefined, page: 1 }))}
+                    className="w-1/2 px-1.5 py-1.5 text-xs border border-slate-200 rounded-lg focus:outline-none focus:ring-1 focus:ring-primary-500 focus:border-primary-500 transition-all"
+                  />
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
 
       {/* Import Processing Indicator */}
       {importStatus === 'processing' && (
@@ -723,11 +1052,11 @@ const Clients = () => {
         data={clients}
         onPaginationChange={handlePageChange}
         onPageSizeChange={handlePageSizeChange}
-        onFilterChange={handleFilterChange}
         pageCount={Math.ceil(totalCount / (filters.limit || 10))}
         currentPage={filters.page || 1}
         pageSize={filters.limit || 10}
         isLoading={isLoading}
+        hideFilters={true}
       />
 
       <EditClientModal

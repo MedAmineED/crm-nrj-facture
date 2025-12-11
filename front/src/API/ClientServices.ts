@@ -8,6 +8,7 @@ export interface Client {
     profile: string;
     status: string;
     raisonSociale: string;
+    comment?: string;
     contacts?: Contact[];
 }
 
@@ -21,6 +22,14 @@ class ClientServices {
         num_client?: string;
         hasInvoices?: 'with' | 'without' | 'all';
         search?: string;
+        // New filters based on invoice data
+        departement?: string;
+        code_postal?: string;
+        adresse_site?: string;
+        montant_ttc_min?: number;
+        montant_ttc_max?: number;
+        conso_annuelle_min?: number;
+        conso_annuelle_max?: number;
     }): Promise<{ clients: Client[], totalCount: number }> {
         try {
             const response = await axios.get(`${ApiUrls.BASE_URL}client/all`, {
@@ -78,6 +87,21 @@ class ClientServices {
             return response.data;
         } catch (error) {
             console.error("Error deleting client:", error);
+            throw error;
+        }
+    }
+
+    async getDistinctStatuses(token: string): Promise<string[]> {
+        try {
+            const response = await axios.get(`${ApiUrls.BASE_URL}client/statuses`, {
+                headers: {
+                    'Content-Type': 'application/json',
+                    'Authorization': `Bearer ${token}`,
+                },
+            });
+            return response.data;
+        } catch (error) {
+            console.error("Error fetching statuses:", error);
             throw error;
         }
     }

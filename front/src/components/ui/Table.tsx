@@ -31,6 +31,7 @@ export interface DataTableProps<TData> {
   isLoading?: boolean;
   isModal?: boolean;
   isContact?: boolean;
+  hideFilters?: boolean;
 }
 
 // Icons
@@ -90,6 +91,7 @@ export function DataTable<TData>({
   isLoading = false,
   isModal = false,
   isContact = false,
+  hideFilters = false,
 }: DataTableProps<TData>) {
   const [localFilters, setLocalFilters] = useState<ColumnFiltersState>([]);
   const [appliedFilters, setAppliedFilters] = useState<ColumnFiltersState>([]);
@@ -192,12 +194,12 @@ export function DataTable<TData>({
             onChange={(e: React.ChangeEvent<HTMLInputElement>) =>
               column.setFilterValue(e.target.value)
             }
-            className="w-full px-3 py-2 bg-white border border-slate-200 rounded-xl text-sm focus:ring-2 focus:ring-primary-500/20 focus:border-primary-500 transition-all"
+            className="w-full px-2 py-1.5 bg-white border border-slate-200 rounded-lg text-xs focus:ring-1 focus:ring-primary-500/20 focus:border-primary-500 transition-all"
           />
         );
       case 'number':
         return (
-          <div className="flex gap-2">
+          <div className="flex gap-1">
             <Input
               id={`filter-${columnId}-min`}
               type="number"
@@ -209,7 +211,7 @@ export function DataTable<TData>({
                   (filterValue as [number, number])?.[1],
                 ])
               }
-              className="w-full px-3 py-2 bg-white border border-slate-200 rounded-xl text-sm focus:ring-2 focus:ring-primary-500/20 focus:border-primary-500 transition-all"
+              className="w-full px-2 py-1.5 bg-white border border-slate-200 rounded-lg text-xs focus:ring-1 focus:ring-primary-500/20 focus:border-primary-500 transition-all"
             />
             <Input
               id={`filter-${columnId}-max`}
@@ -222,13 +224,13 @@ export function DataTable<TData>({
                   e.target.value ? Number(e.target.value) : undefined,
                 ])
               }
-              className="w-full px-3 py-2 bg-white border border-slate-200 rounded-xl text-sm focus:ring-2 focus:ring-primary-500/20 focus:border-primary-500 transition-all"
+              className="w-full px-2 py-1.5 bg-white border border-slate-200 rounded-lg text-xs focus:ring-1 focus:ring-primary-500/20 focus:border-primary-500 transition-all"
             />
           </div>
         );
       case 'dateRange':
         return (
-          <div className="flex gap-2">
+          <div className="flex gap-1">
             <DatePicker
               id={`filter-${columnId}-start`}
               selected={(filterValue as [string, string])?.[0] ? new Date((filterValue as [string, string])[0]) : null}
@@ -239,7 +241,7 @@ export function DataTable<TData>({
                 ])
               }
               placeholderText="Début"
-              className="w-full px-3 py-2 bg-white border border-slate-200 rounded-xl text-sm focus:ring-2 focus:ring-primary-500/20 focus:border-primary-500 transition-all"
+              className="w-full px-2 py-1.5 bg-white border border-slate-200 rounded-lg text-xs focus:ring-1 focus:ring-primary-500/20 focus:border-primary-500 transition-all"
             />
             <DatePicker
               id={`filter-${columnId}-end`}
@@ -251,7 +253,7 @@ export function DataTable<TData>({
                 ])
               }
               placeholderText="Fin"
-              className="w-full px-3 py-2 bg-white border border-slate-200 rounded-xl text-sm focus:ring-2 focus:ring-primary-500/20 focus:border-primary-500 transition-all"
+              className="w-full px-2 py-1.5 bg-white border border-slate-200 rounded-lg text-xs focus:ring-1 focus:ring-primary-500/20 focus:border-primary-500 transition-all"
             />
           </div>
         );
@@ -264,7 +266,7 @@ export function DataTable<TData>({
             onChange={(e: React.ChangeEvent<HTMLSelectElement>) =>
               column.setFilterValue(e.target.value || undefined)
             }
-            className="w-full px-3 py-2 bg-white border border-slate-200 rounded-xl text-sm focus:ring-2 focus:ring-primary-500/20 focus:border-primary-500 transition-all"
+            className="w-full px-2 py-1.5 bg-white border border-slate-200 rounded-lg text-xs focus:ring-1 focus:ring-primary-500/20 focus:border-primary-500 transition-all"
           >
             <option value="">Tous</option>
             {options.map((option) => (
@@ -282,64 +284,68 @@ export function DataTable<TData>({
   return (
     <div className="card-premium overflow-hidden">
       {/* Controls Header */}
-      <div className="px-6 py-4 border-b border-slate-100 bg-gradient-to-r from-slate-50 to-white">
-        <div className="flex flex-wrap items-center justify-between gap-4">
-          <div className="flex items-center gap-3">
-            <button
-              onClick={() => setIsFilterOpen(!isFilterOpen)}
-              className={`inline-flex items-center gap-2 px-4 py-2.5 rounded-xl text-sm font-medium transition-all duration-200 ${
-                isFilterOpen 
-                  ? 'bg-primary-50 text-primary-700 border border-primary-200' 
-                  : 'bg-white text-slate-600 border border-slate-200 hover:bg-slate-50 hover:border-slate-300'
-              }`}
-            >
-              <Icons.Filter />
-              <span>Filtres</span>
-              {appliedFilters.length > 0 && (
-                <span className="ml-1 px-2 py-0.5 text-xs font-bold rounded-full bg-primary-500 text-white">
-                  {appliedFilters.length}
-                </span>
-              )}
-            </button>
-            
-            {isFilterDirty && (
-              <Button variant="primary" size="sm" onClick={handleApplyFilters} disabled={isLoading}>
-                Appliquer
-              </Button>
-            )}
-            
-            {appliedFilters.length > 0 && (
-              <button
-                onClick={handleResetFilters}
-                className="inline-flex items-center gap-1.5 px-3 py-2 text-sm font-medium text-rose-600 hover:text-rose-700 hover:bg-rose-50 rounded-lg transition-colors"
-              >
-                <Icons.X />
-                Réinitialiser
-              </button>
+      <div className="px-4 py-2.5 border-b border-slate-100 bg-gradient-to-r from-slate-50 to-white">
+        <div className="flex flex-wrap items-center justify-between gap-2">
+          <div className="flex items-center gap-2">
+            {!hideFilters && (
+              <>
+                <button
+                  onClick={() => setIsFilterOpen(!isFilterOpen)}
+                  className={`inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-xs font-medium transition-all duration-200 ${
+                    isFilterOpen 
+                      ? 'bg-primary-50 text-primary-700 border border-primary-200' 
+                      : 'bg-white text-slate-600 border border-slate-200 hover:bg-slate-50 hover:border-slate-300'
+                  }`}
+                >
+                  <Icons.Filter />
+                  <span>Filtres</span>
+                  {appliedFilters.length > 0 && (
+                    <span className="ml-0.5 px-1.5 py-0.5 text-[10px] font-bold rounded-full bg-primary-500 text-white">
+                      {appliedFilters.length}
+                    </span>
+                  )}
+                </button>
+                
+                {isFilterDirty && (
+                  <Button variant="primary" size="sm" onClick={handleApplyFilters} disabled={isLoading}>
+                    Appliquer
+                  </Button>
+                )}
+                
+                {appliedFilters.length > 0 && (
+                  <button
+                    onClick={handleResetFilters}
+                    className="inline-flex items-center gap-1 px-2 py-1 text-xs font-medium text-rose-600 hover:text-rose-700 hover:bg-rose-50 rounded-md transition-colors"
+                  >
+                    <Icons.X />
+                    Réinitialiser
+                  </button>
+                )}
+              </>
             )}
           </div>
           
-          <div className="flex items-center gap-3">
+          <div className="flex items-center gap-2">
             {(!isModal && !isContact) && (
               <button
                 onClick={exportToCSV}
                 disabled={isLoading || data?.length === 0}
-                className="inline-flex items-center gap-2 px-4 py-2.5 rounded-xl text-sm font-medium bg-white text-slate-600 border border-slate-200 hover:bg-slate-50 hover:border-slate-300 transition-all duration-200 disabled:opacity-50 disabled:cursor-not-allowed"
+                className="inline-flex items-center gap-1.5 px-2.5 py-1.5 rounded-lg text-xs font-medium bg-white text-slate-600 border border-slate-200 hover:bg-slate-50 hover:border-slate-300 transition-all duration-200 disabled:opacity-50 disabled:cursor-not-allowed"
               >
                 <Icons.Download />
-                Exporter CSV
+                Exporter
               </button>
             )}
             
-            <div className="flex items-center gap-2">
+            <div className="flex items-center gap-1">
               {showCustomInput ? (
-                <div className="flex items-center gap-2">
+                <div className="flex items-center gap-1">
                   <Input
                     type="number"
                     value={customPageSize}
                     onChange={(e) => setCustomPageSize(e.target.value)}
                     placeholder="Taille"
-                    className="w-20 px-3 py-2 bg-white border border-slate-200 rounded-xl text-sm"
+                    className="w-16 px-2 py-1 bg-white border border-slate-200 rounded-lg text-xs"
                     min="1"
                   />
                   <Button variant="primary" size="sm" onClick={() => {
@@ -364,15 +370,15 @@ export function DataTable<TData>({
                       onPageSizeChange?.(Number(e.target.value));
                     }
                   }}
-                  className="px-3 py-2.5 bg-white border border-slate-200 rounded-xl text-sm font-medium text-slate-600 focus:ring-2 focus:ring-primary-500/20 focus:border-primary-500 transition-all cursor-pointer"
+                  className="px-2 py-1.5 bg-white border border-slate-200 rounded-lg text-xs font-medium text-slate-600 focus:ring-1 focus:ring-primary-500/20 focus:border-primary-500 transition-all cursor-pointer"
                   disabled={isLoading}
                 >
                   {[10, 20, 30, 50, 100].map((size) => (
                     <option key={size} value={size}>
-                      {size} lignes
+                      {size}
                     </option>
                   ))}
-                  <option value="custom">Personnalisé...</option>
+                  <option value="custom">...</option>
                 </select>
               )}
             </div>
@@ -381,16 +387,16 @@ export function DataTable<TData>({
       </div>
 
       {/* Filter Panel */}
-      {isFilterOpen && (
-        <div className="px-6 py-5 bg-gradient-to-b from-slate-50 to-slate-100/50 border-b border-slate-100">
-          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4">
+      {!hideFilters && isFilterOpen && (
+        <div className="px-4 py-3 bg-gradient-to-b from-slate-50 to-slate-100/50 border-b border-slate-100">
+          <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 xl:grid-cols-6 2xl:grid-cols-8 gap-2">
             {table
               .getAllColumns()
               .filter(column => column.getCanFilter())
               .map((column) => (
-                <div key={column.id} className="space-y-2">
+                <div key={column.id} className="space-y-1">
                   <div className="flex items-center justify-between">
-                    <label htmlFor={`filter-${column.id}`} className="text-xs font-semibold text-slate-500 uppercase tracking-wider">
+                    <label htmlFor={`filter-${column.id}`} className="text-[10px] font-semibold text-slate-500 uppercase tracking-wide truncate">
                       {column.id.charAt(0).toUpperCase() + column.id.slice(1).replace(/_/g, ' ')}
                     </label>
                     {column.getFilterValue() && (
@@ -399,9 +405,9 @@ export function DataTable<TData>({
                           column.setFilterValue(undefined);
                           setIsFilterDirty(true);
                         }}
-                        className="text-xs text-slate-400 hover:text-slate-600 transition-colors"
+                        className="text-[10px] text-slate-400 hover:text-slate-600 transition-colors"
                       >
-                        Effacer
+                        ×
                       </button>
                     )}
                   </div>
@@ -421,7 +427,7 @@ export function DataTable<TData>({
                 {headerGroup.headers.map((header) => (
                   <th
                     key={header.id}
-                    className="px-6 py-4 text-left text-xs font-bold text-slate-500 uppercase tracking-wider border-b border-slate-200"
+                    className="px-3 py-2.5 text-left text-[10px] font-bold text-slate-500 uppercase tracking-wider border-b border-slate-200 whitespace-nowrap"
                   >
                     {header.isPlaceholder
                       ? null
@@ -464,7 +470,7 @@ export function DataTable<TData>({
                   }`}
                 >
                   {row.getVisibleCells().map((cell) => (
-                    <td key={cell.id} className="px-6 py-4 text-sm text-slate-700">
+                    <td key={cell.id} className="px-3 py-2 text-xs text-slate-700 whitespace-nowrap">
                       {flexRender(cell.column.columnDef.cell, cell.getContext())}
                     </td>
                   ))}
@@ -476,10 +482,10 @@ export function DataTable<TData>({
       </div>
 
       {/* Pagination */}
-      <div className="px-6 py-4 border-t border-slate-100 bg-gradient-to-r from-white to-slate-50">
-        <div className="flex flex-wrap items-center justify-between gap-4">
-          <p className="text-sm text-slate-500">
-            Page <span className="font-semibold text-slate-700">{currentPage}</span> sur <span className="font-semibold text-slate-700">{pageCount || 1}</span>
+      <div className="px-4 py-2.5 border-t border-slate-100 bg-gradient-to-r from-white to-slate-50">
+        <div className="flex flex-wrap items-center justify-between gap-2">
+          <p className="text-xs text-slate-500">
+            Page <span className="font-semibold text-slate-700">{currentPage}</span>/<span className="font-semibold text-slate-700">{pageCount || 1}</span>
           </p>
           
           <div className="flex items-center gap-1">
@@ -518,9 +524,9 @@ export function DataTable<TData>({
                     key={pageNum}
                     onClick={() => onPaginationChange?.(pageNum)}
                     disabled={isLoading}
-                    className={`min-w-[2.5rem] h-10 rounded-xl text-sm font-semibold transition-all duration-200 ${
+                    className={`min-w-[1.75rem] h-7 rounded-lg text-xs font-semibold transition-all duration-200 ${
                       currentPage === pageNum
-                        ? 'bg-primary-500 text-white shadow-lg shadow-primary-500/30'
+                        ? 'bg-primary-500 text-white shadow-md shadow-primary-500/30'
                         : 'text-slate-600 hover:bg-slate-100'
                     }`}
                   >
@@ -535,7 +541,7 @@ export function DataTable<TData>({
                   <button
                     onClick={() => onPaginationChange?.(pageCount)}
                     disabled={isLoading}
-                    className="min-w-[2.5rem] h-10 rounded-xl text-sm font-semibold text-slate-600 hover:bg-slate-100 transition-all duration-200"
+                    className="min-w-[1.75rem] h-7 rounded-lg text-xs font-semibold text-slate-600 hover:bg-slate-100 transition-all duration-200"
                   >
                     {pageCount}
                   </button>

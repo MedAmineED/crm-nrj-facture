@@ -3,7 +3,8 @@
 import DashboardLayout from "@/components/DashboardLayout";
 import Contacts from "@/pages/Contacts";
 import Login from "@/pages/Login";
-import MyLeads from "@/pages/MyLeads";
+import MesLeads from "@/pages/MesLeads";
+import MyInvoices from "@/pages/MyInvoices";
 import WebsiteLeads from "@/pages/WebsiteLeads";
 import React from "react";
 import { Navigate, useRoutes, type RouteObject } from "react-router-dom";
@@ -15,6 +16,8 @@ import UsersVerify from "@/pages/UsersVerify";
 import Clients from "@/pages/Clients";
 import ClientDetails from "@/pages/ClientDetails";
 import Dashboard from "@/pages/Dashboard";
+import Profile from "@/pages/Profile";
+import Dispatcher from "@/pages/Dispatcher";
 
 const ProtectedRoute = ({ children }: { children: React.ReactNode }) => {
   const { isAuthenticated } = useAuth();
@@ -81,10 +84,18 @@ const Router: React.FC = () => {
           ),
         },
         {
-          path: "my-leads",
+          path: "mes-leads",
           element: (
             <ProtectedRoute>
-              <MyLeads />
+              <MesLeads />
+            </ProtectedRoute>
+          ),
+        },
+        {
+          path: "my-invoices",
+          element: (
+            <ProtectedRoute>
+              <MyInvoices />
             </ProtectedRoute>
           ),
         },
@@ -112,7 +123,46 @@ const Router: React.FC = () => {
             </ProtectedRoute>
           ),
         },
-
+        {
+          path: "profile",
+          element: (
+            <ProtectedRoute>
+              <Profile />
+            </ProtectedRoute>
+          ),
+        },
+        {
+          path: "dispatcher",
+          element: (
+            <ProtectedRoute>
+              <Dispatcher />
+            </ProtectedRoute>
+          ),
+        },
+        {
+          path: "dispatcher/:userId",
+          element: (
+            <ProtectedRoute>
+              <Dispatcher />
+            </ProtectedRoute>
+          ),
+        },
+        {
+          path: "dispatcher/:userId/assign",
+          element: (
+            <ProtectedRoute>
+              <Dispatcher />
+            </ProtectedRoute>
+          ),
+        },
+        {
+          path: "dispatcher/:userId/manage",
+          element: (
+            <ProtectedRoute>
+              <Dispatcher />
+            </ProtectedRoute>
+          ),
+        },
       ],
     },
     {

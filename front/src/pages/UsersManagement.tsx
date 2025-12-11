@@ -16,6 +16,7 @@ interface User {
   username: string;
   password: string;
   roles: string[];
+  isActive?: boolean;
 }
 
 type Column = ColumnDef<User> & {
@@ -40,8 +41,24 @@ const UsersManagement = () => {
   const [isConfirmOpen, setIsConfirmOpen] = useState(false);
   const [selectedUser, setSelectedUser] = useState<User | null>(null);
   const [userToDelete, setUserToDelete] = useState<number | null>(null);
+  const [message, setMessage] = useState('');
   const { isAdmin, isLoading: isAuthLoading, token } = useAuth();
   const navigate = useNavigate();
+
+  const handleBanUser = useCallback(async (userId: number, ban: boolean) => {
+    if (!token) return;
+    try {
+      await axios.patch(
+        `${ApiUrls.BASE_URL}users/${userId}/${ban ? 'ban' : 'unban'}`,
+        {},
+        { headers: { Authorization: `Bearer ${token}` } }
+      );
+      setMessage(ban ? '🚫 Utilisateur banni' : '✅ Utilisateur débanni');
+      fetchUsers();
+    } catch (error) {
+      setMessage('❌ Erreur lors de la mise à jour du statut.');
+    }
+  }, [token]);
 
   const defaultText = (id: keyof User, header: string): Column => ({
     accessorKey: id,
@@ -61,31 +78,46 @@ const UsersManagement = () => {
       enableColumnFilter: true,
     },
     {
+      id: 'status',
+      header: 'État',
+      cell: ({ row }) => row.original.isActive === false ? (
+        <span className="px-2 py-1 rounded-full text-xs font-medium bg-red-100 text-red-800">Banni</span>
+      ) : (
+        <span className="px-2 py-1 rounded-full text-xs font-medium bg-green-100 text-green-800">Actif</span>
+      ),
+    },
+    {
       id: 'actions',
       header: 'Actions',
       cell: ({ row }) => (
-        <div className="flex gap-2">
-          <Button
-            variant="outline"
-            size="sm"
-            onClick={() => handleSendContacts(row.original.id)}
-          >
-            Envoyer les contacts
-          </Button>
-          <Button
-            variant="outline"
-            size="sm"
+        <div className="flex gap-1.5">
+          <button
             onClick={() => handleEdit(row.original)}
+            className="px-2 py-1 text-[10px] font-medium rounded-md bg-primary-50 text-primary-600 hover:bg-primary-100 border border-primary-200"
           >
             Modifier
-          </Button>
-          <Button
-            variant="outline"
-            size="sm"
+          </button>
+          {row.original.isActive === false ? (
+            <button
+              onClick={() => handleBanUser(row.original.id, false)}
+              className="px-2 py-1 text-[10px] font-medium rounded-md bg-emerald-50 text-emerald-600 hover:bg-emerald-100 border border-emerald-200"
+            >
+              Débannir
+            </button>
+          ) : (
+            <button
+              onClick={() => handleBanUser(row.original.id, true)}
+              className="px-2 py-1 text-[10px] font-medium rounded-md bg-orange-50 text-orange-600 hover:bg-orange-100 border border-orange-200"
+            >
+              Bannir
+            </button>
+          )}
+          <button
             onClick={() => handleDelete(row.original.id)}
+            className="px-2 py-1 text-[10px] font-medium rounded-md bg-red-50 text-red-600 hover:bg-red-100 border border-red-200"
           >
             Supprimer
-          </Button>
+          </button>
         </div>
       ),
     },
@@ -220,9 +252,9 @@ const UsersManagement = () => {
   }, []);
 
   return (
-    <div className="container mx-auto py-4">
-      <div className="flex justify-between items-center mb-6">
-        <h1 className="text-2xl font-bold">Gestion des utilisateurs</h1>
+    <div className="w-full py-2">
+      <div className="flex justify-between items-center mb-4">
+        <h1 className="text-xl font-bold text-slate-800">Utilisateurs</h1>
         {isAdmin && (
           <Button
             variant="primary"
@@ -231,11 +263,18 @@ const UsersManagement = () => {
               setIsModalOpen(true);
               console.log('Créer un utilisateur cliqué - isModalOpen:', true);
             }}
+            className="text-xs px-3 py-1.5"
           >
-            Créer un utilisateur
+            + Utilisateur
           </Button>
         )}
       </div>
+      {message && (
+        <div className="mb-4 p-3 bg-slate-100 rounded-lg text-sm flex justify-between items-center">
+          <span>{message}</span>
+          <button onClick={() => setMessage('')} className="text-slate-500 hover:text-slate-700">×</button>
+        </div>
+      )}
       {error && (
         <div className="mb-4 p-4 bg-red-100 border border-red-400 text-red-700 rounded">
           {error}

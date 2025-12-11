@@ -21,6 +21,14 @@ export class ClientController {
         @Query('num_client') num_client?: string,
         @Query('hasInvoices') hasInvoices?: 'with' | 'without' | 'all',
         @Query('search') search?: string,
+        // New filters based on invoice data
+        @Query('departement') departement?: string,
+        @Query('code_postal') code_postal?: string,
+        @Query('adresse_site') adresse_site?: string,
+        @Query('montant_ttc_min') montant_ttc_min?: string,
+        @Query('montant_ttc_max') montant_ttc_max?: string,
+        @Query('conso_annuelle_min') conso_annuelle_min?: string,
+        @Query('conso_annuelle_max') conso_annuelle_max?: string,
     ) {
         return this.clientService.findAll({
             page: parseInt(page, 10),
@@ -31,11 +39,24 @@ export class ClientController {
             num_client,
             hasInvoices,
             search,
+            departement,
+            code_postal,
+            adresse_site,
+            montant_ttc_min: montant_ttc_min ? parseFloat(montant_ttc_min) : undefined,
+            montant_ttc_max: montant_ttc_max ? parseFloat(montant_ttc_max) : undefined,
+            conso_annuelle_min: conso_annuelle_min ? parseFloat(conso_annuelle_min) : undefined,
+            conso_annuelle_max: conso_annuelle_max ? parseFloat(conso_annuelle_max) : undefined,
         });
     }
 
-    @Get(':id')
+    @Get('statuses')
     @Roles(Role.ADMIN)
+    async getDistinctStatuses() {
+        return this.clientService.getDistinctStatuses();
+    }
+
+    @Get(':id')
+    @Roles(Role.USER, Role.ADMIN)
     async findOne(@Param('id') id: string) {
         return this.clientService.findOne(+id);
     }

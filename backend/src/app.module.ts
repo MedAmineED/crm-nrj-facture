@@ -11,6 +11,7 @@ import { ClientModule } from './client/client.module';
 import { AuthModule } from './auth/auth.module';
 import { UsersModule } from './users/users.module';
 import { AdminModule } from './admin/admin.module';
+import { ClientAssignmentModule } from './client-assignment/client-assignment.module';
 
 @Module({
   imports: [
@@ -33,6 +34,7 @@ import { AdminModule } from './admin/admin.module';
     AuthModule,
     UsersModule,
     AdminModule, // Ensure AdminModule is imported
+    ClientAssignmentModule,
   ],
   controllers: [AppController],
   providers: [AppService],

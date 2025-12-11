@@ -57,32 +57,13 @@ const Contacts = () => {
       id: 'actions',
       header: 'Actions',
       cell: ({ row }) => (
-        <div className="flex gap-2">
-          <Button
-            variant="outline"
-            size="sm"
+        <div className="flex gap-1.5">
+          <button
             onClick={() => handleFacture(row.original.num_client)}
+            className="px-2 py-1 text-[10px] font-medium rounded-md bg-primary-50 text-primary-600 hover:bg-primary-100 border border-primary-200"
           >
             Factures
-          </Button>
-          {/*isAdmin && (
-            <>
-              <Button
-                variant="outline"
-                size="sm"
-                onClick={() => handleEdit(row.original)}
-              >
-                Modifier
-              </Button>
-              <Button
-                variant="outline"
-                size="sm"
-                onClick={() => handleDelete(row.original.id)}
-              >
-                Supprimer
-              </Button>
-            </>
-          )*/}
+          </button>
         </div>
       ),
     },
@@ -297,25 +278,26 @@ const fetchContacts = useCallback(async () => {
   }, [contacts]);
 
   return (
-    <div className="container mx-auto py-6">
-      <div className="flex justify-between items-center mb-6">
-        <h1 className="text-2xl font-bold">Mes Contacts</h1>
+    <div className="w-full py-2">
+      <div className="flex justify-between items-center mb-4">
+        <h1 className="text-xl font-bold text-slate-800">Contacts</h1>
         <div className="flex gap-2">
           {/* Import moved to Clients page */}
           <Button
             variant="outline"
             onClick={downloadZipWithDataAndPdfs}
             disabled={isLoading || contacts.length === 0}
+            className="text-xs px-3 py-1.5"
           >
-            {isLoading ? 'Préparation du téléchargement...' : 'Télécharger ZIP'}
+            {isLoading ? 'Préparation...' : 'ZIP'}
           </Button>
         </div>
       </div>
       
       {/* Invoice Filter Section */}
-      <div className="mb-4 flex items-center gap-3">
-        <label htmlFor="invoice-filter" className="text-sm font-medium text-gray-700">
-          Filtrer par factures:
+      <div className="mb-3 flex items-center gap-2">
+        <label htmlFor="invoice-filter" className="text-xs font-medium text-gray-600">
+          Filtrer:
         </label>
         <select
           id="invoice-filter"
@@ -324,16 +306,16 @@ const fetchContacts = useCallback(async () => {
             const value = e.target.value as 'with' | 'without' | 'all';
             setFilters(prev => ({ ...prev, hasInvoices: value, page: 1 }));
           }}
-          className="px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+          className="px-2 py-1 text-xs border border-gray-300 rounded-lg shadow-sm focus:outline-none focus:ring-1 focus:ring-blue-500 focus:border-blue-500"
         >
           <option value="with">Avec factures</option>
           {isAdmin && <option value="without">Sans factures</option>}
-          {isAdmin && <option value="all">Tous les contacts</option>}
+          {isAdmin && <option value="all">Tous</option>}
         </select>
-        <span className="text-xs text-gray-500">
-          {filters.hasInvoices === 'with' && '(Affichage par défaut: contacts avec factures uniquement)'}
-          {filters.hasInvoices === 'without' && '(Contacts sans factures)'}
-          {filters.hasInvoices === 'all' && '(Tous les contacts)'}
+        <span className="text-[10px] text-gray-500">
+          {filters.hasInvoices === 'with' && '(Défaut)'}
+          {filters.hasInvoices === 'without' && '(Sans factures)'}
+          {filters.hasInvoices === 'all' && '(Tous)'}
         </span>
       </div>
       {error && (

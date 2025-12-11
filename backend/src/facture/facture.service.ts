@@ -193,6 +193,16 @@ export class FactureService {
             conso_annuelle: `%${filters.conso_annuelle}%`,
           });
         }
+        if (filters.conso_annuelle_min !== undefined && filters.conso_annuelle_min !== null) {
+          queryBuilder.andWhere('CAST(REGEXP_REPLACE(facture.conso_annuelle, \'[^0-9]\', \'\') AS UNSIGNED) >= :conso_annuelle_min', {
+            conso_annuelle_min: filters.conso_annuelle_min,
+          });
+        }
+        if (filters.conso_annuelle_max !== undefined && filters.conso_annuelle_max !== null) {
+          queryBuilder.andWhere('CAST(REGEXP_REPLACE(facture.conso_annuelle, \'[^0-9]\', \'\') AS UNSIGNED) <= :conso_annuelle_max', {
+            conso_annuelle_max: filters.conso_annuelle_max,
+          });
+        }
         if (filters.montant_ttc_min) {
           queryBuilder.andWhere('facture.montant_ttc >= :montant_ttc_min', {
             montant_ttc_min: filters.montant_ttc_min,
@@ -300,6 +310,16 @@ export class FactureService {
         if (filters.conso_annuelle) {
           queryBuilder.andWhere('facture.conso_annuelle LIKE :conso_annuelle', {
             conso_annuelle: `%${filters.conso_annuelle}%`,
+          });
+        }
+        if (filters.conso_annuelle_min !== undefined && filters.conso_annuelle_min !== null) {
+          queryBuilder.andWhere('CAST(REGEXP_REPLACE(facture.conso_annuelle, \'[^0-9]\', \'\') AS UNSIGNED) >= :conso_annuelle_min', {
+            conso_annuelle_min: filters.conso_annuelle_min,
+          });
+        }
+        if (filters.conso_annuelle_max !== undefined && filters.conso_annuelle_max !== null) {
+          queryBuilder.andWhere('CAST(REGEXP_REPLACE(facture.conso_annuelle, \'[^0-9]\', \'\') AS UNSIGNED) <= :conso_annuelle_max', {
+            conso_annuelle_max: filters.conso_annuelle_max,
           });
         }
         if (filters.montant_ttc_min) {

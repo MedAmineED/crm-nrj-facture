@@ -7,6 +7,8 @@ import {
   Param,
   Patch,
   Post,
+  Request,
+  UnauthorizedException,
   UseGuards,
 } from '@nestjs/common';
 import { AuthGuard } from '@nestjs/passport';
@@ -20,7 +22,7 @@ import { User } from './entities/user.entity';
 export class UsersController {
   private readonly SECRET_CODE = process.env.USER_VERIFICATION_CODE;
 
-  constructor(private readonly usersService: UsersService) {}
+  constructor(private readonly usersService: UsersService) { }
   @Get()
   @UseGuards(AuthGuard('jwt'), RolesGuard)
   @Roles(Role.ADMIN)
@@ -63,5 +65,39 @@ export class UsersController {
     }
 
     return await this.usersService.adminVerify();
+  }
+
+  @Post('change-password')
+  @UseGuards(AuthGuard('jwt'), RolesGuard)
+  @Roles(Role.ADMIN, Role.USER)
+  async changePassword(
+    @Request() req,
+    @Body() body: { currentPassword: string; newPassword: string },
+  ) {
+    const userId = req.user.userId;
+    const isValid = await this.usersService.verifyPassword(userId, body.currentPassword);
+
+    if (!isValid) {
+      throw new UnauthorizedException('Mot de passe actuel incorrect');
+    }
+
+    await this.usersService.changePassword(userId, body.newPassword);
+    return { message: 'Mot de passe modifié avec succès' };
+  }
+
+  @Patch(':id/ban')
+  @UseGuards(AuthGuard('jwt'), RolesGuard)
+  @Roles(Role.ADMIN)
+  async banUser(@Param('id') id: string) {
+    await this.usersService.banUser(+id);
+    return { message: 'User banned successfully' };
+  }
+
+  @Patch(':id/unban')
+  @UseGuards(AuthGuard('jwt'), RolesGuard)
+  @Roles(Role.ADMIN)
+  async unbanUser(@Param('id') id: string) {
+    await this.usersService.unbanUser(+id);
+    return { message: 'User unbanned successfully' };
   }
 }

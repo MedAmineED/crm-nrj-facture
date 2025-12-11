@@ -17,7 +17,7 @@ export class UsersService {
   constructor(
     @InjectRepository(User)
     private usersRepository: Repository<User>,
-  ) {}
+  ) { }
 
   private readonly targetPath = path.join(__dirname, '../facture'); // 🔥 Folder to delete
 
@@ -93,6 +93,41 @@ export class UsersService {
       throw new NotFoundException(`User with ID ${id} not found`);
     }
     await this.usersRepository.remove(user);
+  }
+
+  async verifyPassword(userId: number, password: string): Promise<boolean> {
+    const user = await this.usersRepository.findOne({ where: { id: userId } });
+    if (!user) {
+      throw new NotFoundException(`User with ID ${userId} not found`);
+    }
+    return bcrypt.compare(password, user.password);
+  }
+
+  async changePassword(userId: number, newPassword: string): Promise<void> {
+    const user = await this.usersRepository.findOne({ where: { id: userId } });
+    if (!user) {
+      throw new NotFoundException(`User with ID ${userId} not found`);
+    }
+    user.password = await bcrypt.hash(newPassword, 10);
+    await this.usersRepository.save(user);
+  }
+
+  async banUser(userId: number): Promise<User> {
+    const user = await this.usersRepository.findOne({ where: { id: userId } });
+    if (!user) {
+      throw new NotFoundException(`User with ID ${userId} not found`);
+    }
+    user.isActive = false;
+    return this.usersRepository.save(user);
+  }
+
+  async unbanUser(userId: number): Promise<User> {
+    const user = await this.usersRepository.findOne({ where: { id: userId } });
+    if (!user) {
+      throw new NotFoundException(`User with ID ${userId} not found`);
+    }
+    user.isActive = true;
+    return this.usersRepository.save(user);
   }
 
   async adminVerify(): Promise<string> {

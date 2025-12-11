@@ -16,6 +16,9 @@ export class User {
   @Column('simple-array')
   roles: Role[];
 
+  @Column({ name: 'is_active', default: true })
+  isActive: boolean;
+
   // Relationship to assignments
   @OneToMany(() => UserContactAssignment, (assignment) => assignment.user)
   contactAssignments: UserContactAssignment[];

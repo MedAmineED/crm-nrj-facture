@@ -13,6 +13,8 @@ export class FilterFactureDto {
   creation_date_end?: string;
   pdl?: string;
   conso_annuelle?: string;
+  conso_annuelle_min?: number;
+  conso_annuelle_max?: number;
   prix_unitaire_min?: number;
   prix_unitaire_max?: number;
   page?: number;

@@ -28,7 +28,7 @@ export default function Login() {
     setError('');
     try {
       await login(data);
-      navigate('/dashboard/clients');
+      navigate('/dashboard');
     } catch (err) {
       setError('Nom d\'utilisateur ou mot de passe incorrect');
     } finally {
