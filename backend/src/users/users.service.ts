@@ -5,7 +5,7 @@ import {
   NotFoundException,
 } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
-import { Not, Repository } from 'typeorm';
+import { In, Not, Repository } from 'typeorm';
 import { User } from './entities/user.entity';
 import * as bcrypt from 'bcrypt';
 import { Role } from 'src/auth/role.enum';
@@ -30,7 +30,7 @@ export class UsersService {
 
   async getAllUsers(): Promise<User[]> {
     return this.usersRepository.find({
-      where: { roles: Not(Role.ADMIN) },
+      where: { roles: Not(Role.ADMIN), state: In([1, 2]) }, // Show active and banned, hide deleted (0)
       order: { username: 'ASC' },
     });
   }
@@ -92,7 +92,8 @@ export class UsersService {
     if (!user) {
       throw new NotFoundException(`User with ID ${id} not found`);
     }
-    await this.usersRepository.remove(user);
+    user.state = 0; // Soft delete - set state to 0
+    await this.usersRepository.save(user);
   }
 
   async verifyPassword(userId: number, password: string): Promise<boolean> {
@@ -117,7 +118,7 @@ export class UsersService {
     if (!user) {
       throw new NotFoundException(`User with ID ${userId} not found`);
     }
-    user.isActive = false;
+    user.state = 2; // Banned state
     return this.usersRepository.save(user);
   }
 
@@ -126,7 +127,7 @@ export class UsersService {
     if (!user) {
       throw new NotFoundException(`User with ID ${userId} not found`);
     }
-    user.isActive = true;
+    user.state = 1; // Active state
     return this.usersRepository.save(user);
   }
 

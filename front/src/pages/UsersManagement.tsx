@@ -16,7 +16,7 @@ interface User {
   username: string;
   password: string;
   roles: string[];
-  isActive?: boolean;
+  state?: number; // 0 = deleted, 1 = active, 2 = banned
 }
 
 type Column = ColumnDef<User> & {
@@ -80,7 +80,7 @@ const UsersManagement = () => {
     {
       id: 'status',
       header: 'État',
-      cell: ({ row }) => row.original.isActive === false ? (
+      cell: ({ row }) => row.original.state === 2 ? (
         <span className="px-2 py-1 rounded-full text-xs font-medium bg-red-100 text-red-800">Banni</span>
       ) : (
         <span className="px-2 py-1 rounded-full text-xs font-medium bg-green-100 text-green-800">Actif</span>
@@ -97,7 +97,7 @@ const UsersManagement = () => {
           >
             Modifier
           </button>
-          {row.original.isActive === false ? (
+          {row.original.state === 2 ? (
             <button
               onClick={() => handleBanUser(row.original.id, false)}
               className="px-2 py-1 text-[10px] font-medium rounded-md bg-emerald-50 text-emerald-600 hover:bg-emerald-100 border border-emerald-200"

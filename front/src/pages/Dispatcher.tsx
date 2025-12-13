@@ -10,7 +10,7 @@ import type { ColumnDef } from '@tanstack/react-table';
 interface User {
     id: number;
     username: string;
-    isActive?: boolean;
+    state?: number; // 0 = deleted, 1 = active, 2 = banned
 }
 
 interface UserStats {
@@ -352,8 +352,8 @@ const Dispatcher: React.FC = () => {
         }
     };
 
-    const getStateBadge = (isActive: boolean | undefined) => {
-        if (isActive === false) {
+    const getStateBadge = (state: number | undefined) => {
+        if (state === 2) {
             return <span className="px-2 py-1 rounded-full text-xs font-medium bg-red-100 text-red-800">Banni</span>;
         }
         return <span className="px-2 py-1 rounded-full text-xs font-medium bg-green-100 text-green-800">Actif</span>;
@@ -393,7 +393,7 @@ const Dispatcher: React.FC = () => {
             )
         },
         { accessorKey: 'assignedCount', header: 'Assignés', enableColumnFilter: false, cell: ({ row }) => getCountBadge(row.original.assignedCount) },
-        { id: 'state', header: 'État', enableColumnFilter: false, cell: ({ row }) => getStateBadge(row.original.user.isActive) },
+        { id: 'state', header: 'État', enableColumnFilter: false, cell: ({ row }) => getStateBadge(row.original.user.state) },
         { accessorKey: 'lastAssignedAt', header: 'Dernière assignation', enableColumnFilter: false, cell: ({ row }) => row.original.lastAssignedAt ? <span className="text-sm text-slate-500">{new Date(row.original.lastAssignedAt).toLocaleDateString('fr-FR')}</span> : <span className="text-sm text-slate-400">-</span> },
         { id: 'actions', header: 'Actions', enableColumnFilter: false, cell: ({ row }) => <button onClick={() => selectUser(row.original.user.id)} className="bg-blue-600 text-white px-3 py-1 rounded text-xs font-medium hover:bg-blue-700">Gérer</button> },
     ];
@@ -557,7 +557,7 @@ const Dispatcher: React.FC = () => {
                         </div>
                     </div>
 
-                    <DataTable columns={assignmentColumns} data={filteredAssignments} pageCount={1} currentPage={1} pageSize={filteredAssignments.length || 10} isLoading={loading} />
+                    <DataTable columns={assignmentColumns} data={filteredAssignments} pageCount={Math.ceil(filteredAssignments.length / 50)} currentPage={1} pageSize={50} isLoading={loading} />
                 </>
             )}
         </div>

@@ -16,8 +16,8 @@ export class User {
   @Column('simple-array')
   roles: Role[];
 
-  @Column({ name: 'is_active', default: true })
-  isActive: boolean;
+  @Column({ name: 'state', default: 1 })
+  state: number; // 0 = deleted, 1 = active, 2 = banned
 
   // Relationship to assignments
   @OneToMany(() => UserContactAssignment, (assignment) => assignment.user)

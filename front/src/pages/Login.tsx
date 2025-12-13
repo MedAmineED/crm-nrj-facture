@@ -29,8 +29,13 @@ export default function Login() {
     try {
       await login(data);
       navigate('/dashboard');
-    } catch (err) {
-      setError('Nom d\'utilisateur ou mot de passe incorrect');
+    } catch (err: any) {
+      // Check if it's a banned user error (403 Forbidden)
+      if (err?.response?.status === 403) {
+        setError(err.response?.data?.message || 'Vous avez un problème dans votre compte, contactez l\'administration.');
+      } else {
+        setError('Nom d\'utilisateur ou mot de passe incorrect');
+      }
     } finally {
       setIsLoading(false);
     }

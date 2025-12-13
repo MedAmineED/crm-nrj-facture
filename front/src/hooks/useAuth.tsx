@@ -45,15 +45,11 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
   }, [token]);
 
   const login = async (data: { username: string; password: string }) => {
-    try {
-      const response = await axios.post(`${ApiUrls.BASE_URL}auth/login`, data);
-      const { access_token } = response.data;
-      localStorage.setItem('token', access_token);
-      setToken(access_token);
-      axios.defaults.headers.common['Authorization'] = `Bearer ${access_token}`;
-    } catch (error) {
-      throw new Error('Invalid username or password');
-    }
+    const response = await axios.post(`${ApiUrls.BASE_URL}auth/login`, data);
+    const { access_token } = response.data;
+    localStorage.setItem('token', access_token);
+    setToken(access_token);
+    axios.defaults.headers.common['Authorization'] = `Bearer ${access_token}`;
   };
 
   const logout = () => {
