@@ -1,0 +1,1648 @@
+
+Text Items (Full): [
+    {
+    text: 'PAROISSE SAINT LUC',
+    x: 321.315,
+    y: 164.06099999999992,
+    page: 1
+    },
+    { text: '', x: 321.315, y: 174.067, page: 1
+    },
+    { text: 'PLACE SAINT PAUL', x: 321.315, y: 174.067, page: 1
+    },
+    { text: '', x: 321.315, y: 185.06499999999994, page: 1
+    },
+    { text: '37000 TOURS', x: 321.315, y: 185.06499999999994, page: 1
+    },
+    { text: '', x: 29.346, y: 41.805999999999926, page: 1
+    },
+    {
+    text: 'Facture centralisée',
+    x: 29.346,
+    y: 41.805999999999926,
+    page: 1
+    },
+    { text: '', x: 29.346, y: 55.03800000000001, page: 1
+    },
+    { text: 'n° 610250493233', x: 29.346, y: 55.03800000000001, page: 1
+    },
+    { text: '', x: 29.346, y: 69.87, page: 1
+    },
+    { text: 'du 03 Mai 2022', x: 29.346, y: 69.87, page: 1
+    },
+    { text: ' ', x: 107.16599999999998, y: 69.87, page: 1
+    },
+    {
+    text: '(document à conserver au minimum 5 ans)',
+    x: 109.746,
+    y: 69.87,
+    page: 1
+    },
+    { text: '', x: 42.519, y: 93.14299999999992, page: 1
+    },
+    {
+    text: 'Votre Service Client',
+    x: 42.519,
+    y: 93.14299999999992,
+    page: 1
+    },
+    {
+    text: 'Pour tous conseils, informations, réclamations :',
+    x: 46.354,
+    y: 114.23599999999999,
+    page: 1
+    },
+    { text: '', x: 46.354, y: 128.63599999999997, page: 1
+    },
+    {
+    text: 'Par téléphone :',
+    x: 46.354,
+    y: 128.63599999999997,
+    page: 1
+    },
+    { text: ' ', x: 106.04399999999997, y: 128.63599999999997, page: 1
+    },
+    {
+    text: 'lundi au vendredi 9h - 20h',
+    x: 108.412,
+    y: 128.63599999999997,
+    page: 1
+    },
+    {
+    text: 'et samedi 9h - 17h',
+    x: 48.653999999999996,
+    y: 143.03599999999994,
+    page: 1
+    },
+    { text: '', x: 46.354, y: 160.13799999999992, page: 1
+    },
+    { text: '0 970 809 240', x: 46.354, y: 160.13799999999992, page: 1
+    },
+    { text: '', x: 46.354, y: 182.78599999999994, page: 1
+    },
+    { text: 'Par mail :', x: 46.354, y: 182.78599999999994, page: 1
+    },
+    { text: ' ', x: 83.50399999999999, y: 182.78599999999994, page: 1
+    },
+    {
+    text: 'cedre@fr.eni.com',
+    x: 85.93,
+    y: 182.78599999999994,
+    page: 1
+    },
+    { text: '', x: 46.354, y: 197.18599999999992, page: 1
+    },
+    { text: 'Par courrier :', x: 46.354, y: 197.18599999999992, page: 1
+    },
+    { text: '', x: 45.354, y: 209.14199999999994, page: 1
+    },
+    {
+    text: 'ENI SERVICE CLIENT GRANDS COMPTES',
+    x: 45.354,
+    y: 209.14199999999994,
+    page: 1
+    },
+    { text: 'TSA 60215', x: 45.354, y: 220.481, page: 1
+    },
+    {
+    text: '35507 VITRE CEDEX',
+    x: 45.354,
+    y: 231.81999999999994,
+    page: 1
+    },
+    { text: '', x: 42.519, y: 250.54399999999998, page: 1
+    },
+    {
+    text: 'Vos informations commerciales',
+    x: 42.519,
+    y: 250.54399999999998,
+    page: 1
+    },
+    { text: 'Numéro de client :', x: 46.354, y: 269.159, page: 1
+    },
+    { text: ' ', x: 118.68399999999997, y: 269.159, page: 1
+    },
+    { text: '245G20199148', x: 120.59400000000001, y: 269.159, page: 1
+    },
+    { text: '', x: 48.444, y: 283.55899999999997, page: 1
+    },
+    {
+    text: 'PAROISSE SAINT LUC',
+    x: 48.444,
+    y: 283.55899999999997,
+    page: 1
+    },
+    { text: '', x: 46.354, y: 297.95899999999995, page: 1
+    },
+    { text: 'SIRET :', x: 46.354, y: 297.95899999999995, page: 1
+    },
+    { text: ' ', x: 75.454, y: 297.95899999999995, page: 1
+    },
+    { text: '38991231200011', x: 77.474, y: 297.95899999999995, page: 1
+    },
+    {
+    text: 'Offre spécifique contrat à prix de marché',
+    x: 46.354,
+    y: 314.568,
+    page: 1
+    },
+    { text: '', x: 46.354, y: 331.222, page: 1
+    },
+    {
+    text: 'Référence Unique de Mandat :',
+    x: 46.354,
+    y: 331.222,
+    page: 1
+    },
+    { text: '', x: 46.354, y: 347.83099999999996, page: 1
+    },
+    {
+    text: 'Echéance de votre contrat :',
+    x: 46.354,
+    y: 347.83099999999996,
+    page: 1
+    },
+    { text: ' ', x: 154.48399999999995, y: 347.83099999999996, page: 1
+    },
+    {
+    text: '28.04.2022',
+    x: 156.30399999999997,
+    y: 347.83099999999996,
+    page: 1
+    },
+    { text: '', x: 46.354, y: 362.23099999999994, page: 1
+    },
+    {
+    text: 'Préavis de résiliation :',
+    x: 46.354,
+    y: 362.23099999999994,
+    page: 1
+    },
+    { text: ' ', x: 132.21399999999994, y: 362.23099999999994, page: 1
+    },
+    { text: '60 jours', x: 134.074, y: 362.23099999999994, page: 1
+    },
+    {
+    text: 'Date de règlement : 17 Juin 2022',
+    x: 46.354,
+    y: 389.64399999999995,
+    page: 1
+    },
+    {
+    text: 'En cas d’absence de paiement au 17 Juin 2022, pénalités de',
+    x: 46.354,
+    y: 398.23599999999993,
+    page: 1
+    },
+    {
+    text: 'retard exigibles à compter de cette date.',
+    x: 46.354,
+    y: 406.8279999999999,
+    page: 1
+    },
+    {
+    text: 'Indemnité forfaitaire pour frais de recouvrement en cas de retard',
+    x: 46.354,
+    y: 415.4199999999999,
+    page: 1
+    },
+    {
+    text: 'de paiement : 40 €',
+    x: 46.354,
+    y: 424.0119999999999,
+    page: 1
+    },
+    {
+    text: "Nos conditions de vente ne prévoient pas d'escompte pour",
+    x: 46.354,
+    y: 432.60399999999987,
+    page: 1
+    },
+    {
+    text: 'paiement anticipé.',
+    x: 46.354,
+    y: 441.19599999999986,
+    page: 1
+    },
+    { text: '', x: 366.034, y: 283.587, page: 1
+    },
+    { text: '06/04/2022', x: 366.034, y: 283.587, page: 1
+    },
+    { text: 'Période du', x: 311.806, y: 283.587, page: 1
+    },
+    { text: ' ', x: 362.94999999999993, y: 283.587, page: 1
+    },
+    { text: '28/04/2022', x: 446.558, y: 283.587, page: 1
+    },
+    { text: 'au', x: 431.042, y: 283.587, page: 1
+    },
+    {
+    text: 'Montant total HT',
+    x: 311.811,
+    y: 307.71799999999996,
+    page: 1
+    },
+    { text: ' ', x: 387.4689999999999, y: 307.71799999999996, page: 1
+    },
+    { text: '25,
+        48 €', x: 497.148, y: 307.71799999999996, page: 1
+    },
+    { text: '', x: 327.91100000000006, y: 324.405, page: 1
+    },
+    { text: 'Dont TICGN', x: 327.91100000000006, y: 324.405, page: 1
+    },
+    { text: ' ', x: 376.95100000000014, y: 324.405, page: 1
+    },
+    { text: '2,
+        35 €', x: 505.722, y: 324.405, page: 1
+    },
+    {
+    text: 'Dont CTA',
+    x: 327.91100000000006,
+    y: 341.41299999999995,
+    page: 1
+    },
+    { text: ' ', x: 367.0110000000001, y: 341.41299999999995, page: 1
+    },
+    { text: '2,
+        61 €', x: 505.722, y: 341.41299999999995, page: 1
+    },
+    { text: 'TVA 5.5%', x: 311.811, y: 358.42099999999994, page: 1
+    },
+    { text: ' ', x: 350.361, y: 358.42099999999994, page: 1
+    },
+    { text: '0,
+        76 €', x: 505.722, y: 358.42099999999994, page: 1
+    },
+    { text: 'TVA 20.0%', x: 311.811, y: 375.429, page: 1
+    },
+    { text: ' ', x: 355.861, y: 375.429, page: 1
+    },
+    { text: '2,
+        31 €', x: 505.722, y: 375.429, page: 1
+    },
+    { text: '', x: 311.811, y: 392.758, page: 1
+    },
+    { text: 'Montant TTC', x: 311.811, y: 392.758, page: 1
+    },
+    { text: ' ', x: 370.41899999999987, y: 392.758, page: 1
+    },
+    { text: '28,
+        55 €', x: 497.148, y: 392.758, page: 1
+    },
+    { text: '', x: 309.977, y: 409.566, page: 1
+    },
+    {
+    text: 'Consommation globale facturée',
+    x: 309.977,
+    y: 409.566,
+    page: 1
+    },
+    {
+    text: 'dont le détail est en annexe : 279 kWh',
+    x: 309.977,
+    y: 420.907,
+    page: 1
+    },
+    { text: '', x: 349.723, y: 431.936, page: 1
+    },
+    {
+    text: 'Le montant de la facture sera prélevé le 17 Juin 2022',
+    x: 349.723,
+    y: 431.936,
+    page: 1
+    },
+    { text: '', x: 312.811, y: 450.917, page: 1
+    },
+    {
+    text: 'Consommation de gaz annuelle estimée au début du contrat :',
+    x: 312.811,
+    y: 450.917,
+    page: 1
+    },
+    { text: '7.463 kWh', x: 312.811, y: 459.933, page: 1
+    },
+    { text: '', x: 588.698, y: 761.168, page: 1
+    },
+    {
+    text: "Eni Gas & Power France S.A. au capital de 29.937.600 Euros – R.C.S. NANTERRE 451 225 692 - N° TVA : FR87451225692 – 24 RUE JACQUES IBERT CS 500001 92533 LEVALLOIS PERRET CEDEX - L'énergie est notre avenir économisons-la ! - site web eni.com/fr",
+    x: 588.698,
+    y: 761.168,
+    page: 1
+    },
+    { text: 'FPF2012-10PRO -', x: 588.698, y: 807.872, page: 1
+    },
+    { text: '', x: 63.362, y: 696.058, page: 1
+    },
+    {
+    text: 'Vous avez choisi le paiement par prélèvement',
+    x: 63.362,
+    y: 696.058,
+    page: 1
+    },
+    { text: ' ', x: 279.59, y: 696.058, page: 1
+    },
+    { text: '610250493233', x: 452.858, y: 696.9459999999999, page: 1
+    },
+    { text: '', x: 63.362, y: 712.662, page: 1
+    },
+    {
+    text: 'Nous vous remercions de votre confiance.',
+    x: 63.362,
+    y: 712.662,
+    page: 1
+    },
+    {
+    text: 'En cas de rejet de prélèvement, merci de joindre ce talon à votre règlement à :',
+    x: 63.362,
+    y: 722.555,
+    page: 1
+    },
+    {
+    text: 'ENI SERVICE ENCAISSEMENT',
+    x: 265.282,
+    y: 736.0459999999999,
+    page: 1
+    },
+    { text: 'TSA 71328', x: 298.41999999999996, y: 745.064, page: 1
+    },
+    {
+    text: '13205 MARSEILLE CEDEX 01',
+    x: 264.55299999999994,
+    y: 754.082,
+    page: 1
+    },
+    { text: '', x: 199.059, y: 769.1419999999999, page: 1
+    },
+    {
+    text: 'Contact Service Encaissement : 0 977 402 575',
+    x: 199.059,
+    y: 769.1419999999999,
+    page: 1
+    },
+    { text: '', x: 141.519, y: 776.342, page: 1
+    },
+    {
+    text: '(Uniquement pour le paiement de votre facture - Prix d’un appel local depuis un poste fixe)',
+    x: 141.519,
+    y: 776.342,
+    page: 1
+    },
+    {
+    text: 'Le prélèvement sera effectué à la date du 17 Juin 2022 sur le compte suivant :',
+    x: 63.362,
+    y: 788.606,
+    page: 1
+    },
+    { text: ' ', x: 340.3099999999999, y: 788.606, page: 1
+    },
+    { text: '/', x: 343.748, y: 788.606, page: 1
+    },
+    { text: '', x: 63.362, y: 814.293, page: 1
+    },
+    { text: 'PAROISSE SAINT LUC', x: 63.362, y: 814.293, page: 1
+    },
+    { text: ' ', x: 145.13600000000002, y: 814.293, page: 1
+    },
+    { text: '245G20199148', x: 471.553, y: 814.293, page: 1
+    },
+    { text: '17 Juin 2022', x: 63.362, y: 828.209, page: 1
+    },
+    { text: ' ', x: 112.18700000000003, y: 828.209, page: 1
+    },
+    { text: '28,
+        55 €', x: 502.645, y: 828.209, page: 1
+    },
+    {
+    text: 'Le détail de votre facture eni',
+    x: 56.693,
+    y: 90.41399999999999,
+    page: 2
+    },
+    { text: '', x: 60.528, y: 106.60799999999995, page: 2
+    },
+    {
+    text: 'À ce jour, toutes vos consommations ont été facturées (réelles ou estimées).',
+    x: 60.528,
+    y: 106.60799999999995,
+    page: 2
+    },
+    { text: '', x: 58.11, y: 145.163, page: 2
+    },
+    {
+    text: 'ASSOCIATION DIOCESAINE DE TOURS',
+    x: 58.11,
+    y: 145.163,
+    page: 2
+    },
+    {
+    text: 'Adresse et coordonnées du site',
+    x: 56.693,
+    y: 191.93599999999992,
+    page: 2
+    },
+    { text: '', x: 56.693, y: 210.75400000000002, page: 2
+    },
+    {
+    text: 'PAROISSE ST LUC - EGLISE',
+    x: 56.693,
+    y: 210.75400000000002,
+    page: 2
+    },
+    {
+    text: '93 RUE DE BEAUJARDIN',
+    x: 56.693,
+    y: 222.09299999999996,
+    page: 2
+    },
+    { text: '37000 TOURS', x: 56.693, y: 233.43200000000002, page: 2
+    },
+    { text: '', x: 57.693, y: 258.741, page: 2
+    },
+    { text: 'Code NAF :', x: 57.693, y: 258.741, page: 2
+    },
+    { text: ' ', x: 97.806, y: 258.741, page: 2
+    },
+    { text: '9491Z', x: 99.61500000000001, y: 258.741, page: 2
+    },
+    { text: '', x: 56.693, y: 273.08899999999994, page: 2
+    },
+    {
+    text: 'Fourniture de gaz naturel du',
+    x: 56.693,
+    y: 273.08899999999994,
+    page: 2
+    },
+    { text: ' ', x: 156.47600000000003, y: 273.08899999999994, page: 2
+    },
+    { text: '06/04/2022', x: 162.575, y: 273.08899999999994, page: 2
+    },
+    { text: ' ', x: 208.0789999999999, y: 273.08899999999994, page: 2
+    },
+    { text: '28/04/2022', x: 224.193, y: 273.08899999999994, page: 2
+    },
+    { text: 'au', x: 211.854, y: 273.08899999999994, page: 2
+    },
+    { text: '', x: 323.15, y: 192.71299999999997, page: 2
+    },
+    {
+    text: 'Votre N° de dépannage 24H/24,
+        7J/7',
+    x: 323.15,
+    y: 192.71299999999997,
+    page: 2
+    },
+    { text: '', x: 324.15, y: 237.26799999999992, page: 2
+    },
+    {
+    text: 'Appel gratuit depuis un poste fixe',
+    x: 324.15,
+    y: 237.26799999999992,
+    page: 2
+    },
+    { text: '', x: 366.67, y: 255.005, page: 2
+    },
+    { text: '09724167860472', x: 366.67, y: 255.005, page: 2
+    },
+    { text: 'N° PCE :', x: 323.15000000000003, y: 255.005, page: 2
+    },
+    {
+    text: 'PRO 6M/MM prix fixe',
+    x: 398.554,
+    y: 266.34399999999994,
+    page: 2
+    },
+    {
+    text: 'Offre appliquée :',
+    x: 323.154,
+    y: 266.34399999999994,
+    page: 2
+    },
+    { text: 'P011', x: 385.356, y: 279.84399999999994, page: 2
+    },
+    {
+    text: 'Profil du site :',
+    x: 323.146,
+    y: 279.84399999999994,
+    page: 2
+    },
+    { text: '3 775 kWh', x: 383.541, y: 291.183, page: 2
+    },
+    { text: 'CAR du site :', x: 323.151, y: 291.183, page: 2
+    },
+    { text: '7 463 kWh', x: 401.995, y: 303.26199999999994, page: 2
+    },
+    {
+    text: 'CAR Facturation :',
+    x: 323.155,
+    y: 303.26199999999994,
+    page: 2
+    },
+    { text: 'T2', x: 439.58, y: 317.76199999999994, page: 2
+    },
+    {
+    text: "Votre tarif d'acheminement :",
+    x: 323.15,
+    y: 317.76199999999994,
+    page: 2
+    },
+    { text: 'S3924', x: 439.58, y: 329.101, page: 2
+    },
+    { text: 'Vos identifiants :', x: 323.15, y: 329.101, page: 2
+    },
+    { text: '', x: 67.346, y: 377.21399999999994, page: 2
+    },
+    { text: 'Numéro de', x: 67.346, y: 377.21399999999994, page: 2
+    },
+    { text: 'compteur', x: 69.714, y: 385.8059999999999, page: 2
+    },
+    { text: 'Index de', x: 128.455, y: 377.21399999999994, page: 2
+    },
+    {
+    text: 'départ',
+    x: 131.62300000000002,
+    y: 385.8059999999999,
+    page: 2
+    },
+    { text: 'Index de', x: 185.148, y: 377.21399999999994, page: 2
+    },
+    { text: 'fin', x: 194.308, y: 385.8059999999999, page: 2
+    },
+    { text: ' ', x: 202.564, y: 385.8059999999999, page: 2
+    },
+    { text: 'PTA', x: 248.528, y: 381.51, page: 2
+    },
+    { text: ' ', x: 261.736, y: 381.51, page: 2
+    },
+    {
+    text: 'Volume converti',
+    x: 285.844,
+    y: 377.21399999999994,
+    page: 2
+    },
+    { text: 'en m3', x: 301.572, y: 385.8059999999999, page: 2
+    },
+    {
+    text: 'Coefficient de',
+    x: 346.367,
+    y: 377.21399999999994,
+    page: 2
+    },
+    {
+    text: 'conversion',
+    x: 351.23900000000003,
+    y: 385.8059999999999,
+    page: 2
+    },
+    { text: 'Consommation', x: 400.477, y: 377.21399999999994, page: 2
+    },
+    { text: 'en kWh', x: 413.197, y: 385.8059999999999, page: 2
+    },
+    { text: 'Prix unitaire', x: 462.829, y: 377.21399999999994, page: 2
+    },
+    { text: '€/MWh', x: 469.045, y: 385.8059999999999, page: 2
+    },
+    { text: 'Montant Hors', x: 516.666, y: 377.21399999999994, page: 2
+    },
+    {
+    text: 'Taxes',
+    x: 529.3860000000001,
+    y: 385.8059999999999,
+    page: 2
+    },
+    { text: '958', x: 78.451, y: 403.049, page: 2
+    },
+    { text: ' ', x: 91.65100000000001, y: 403.049, page: 2
+    },
+    { text: '3 005', x: 132.033, y: 403.049, page: 2
+    },
+    { text: ' ', x: 151.473, y: 403.049, page: 2
+    },
+    { text: '3 030', x: 188.726, y: 403.049, page: 2
+    },
+    { text: ' ', x: 208.16600000000003, y: 403.049, page: 2
+    },
+    { text: '1,
+        000', x: 245.857, y: 403.049, page: 2
+    },
+    { text: ' ', x: 264.417, y: 403.049, page: 2
+    },
+    { text: '25', x: 307.42, y: 403.049, page: 2
+    },
+    { text: ' ', x: 316.21999999999997, y: 403.049, page: 2
+    },
+    { text: '11,
+        160', x: 357.047, y: 403.049, page: 2
+    },
+    { text: ' ', x: 380.0069999999999, y: 403.049, page: 2
+    },
+    { text: '279', x: 418.609, y: 403.049, page: 2
+    },
+    { text: '', x: 66.197, y: 421.41799999999995, page: 2
+    },
+    {
+    text: 'Consommation réelle du 06/04/2022 au 28/04/2022',
+    x: 66.197,
+    y: 421.41799999999995,
+    page: 2
+    },
+    { text: ' ', x: 261.0529999999999, y: 421.41799999999995, page: 2
+    },
+    { text: '279', x: 418.609, y: 419.972, page: 2
+    },
+    { text: ' ', x: 431.8089999999999, y: 419.972, page: 2
+    },
+    { text: '24,
+        49', x: 472.629, y: 419.972, page: 2
+    },
+    { text: ' ', x: 491.1889999999999, y: 419.972, page: 2
+    },
+    { text: '6,
+        83 €', x: 525.582, y: 419.972, page: 2
+    },
+    { text: '', x: 66.197, y: 435.33399999999995, page: 2
+    },
+    {
+    text: 'Distribution terme variable du 06/04/2022 au 28/04/2022',
+    x: 66.197,
+    y: 435.33399999999995,
+    page: 2
+    },
+    { text: ' ', x: 279.52699999999993, y: 435.33399999999995, page: 2
+    },
+    { text: '279', x: 418.609, y: 433.888, page: 2
+    },
+    { text: ' ', x: 431.8089999999999, y: 433.888, page: 2
+    },
+    { text: '8,
+        57', x: 474.826, y: 433.888, page: 2
+    },
+    { text: ' ', x: 488.98599999999993, y: 433.888, page: 2
+    },
+    { text: '2,
+        39 €', x: 525.582, y: 433.888, page: 2
+    },
+    { text: '', x: 66.197, y: 463.42299999999994, page: 2
+    },
+    {
+    text: 'Distribution terme fixe du 06/04/2022 au 28/04/2022',
+    x: 66.197,
+    y: 463.42299999999994,
+    page: 2
+    },
+    { text: ' ', x: 265.2169999999999, y: 463.42299999999994, page: 2
+    },
+    { text: '11,
+        48 €/mois', x: 464.54, y: 461.977, page: 2
+    },
+    { text: ' ', x: 508.86000000000007, y: 461.977, page: 2
+    },
+    { text: '10,
+        57 €', x: 523.386, y: 461.977, page: 2
+    },
+    { text: '', x: 66.197, y: 477.33899999999994, page: 2
+    },
+    {
+    text: 'Coût transport fixe du 06/04/2022 au 28/04/2022',
+    x: 66.197,
+    y: 477.33899999999994,
+    page: 2
+    },
+    { text: ' ', x: 251.85599999999988, y: 477.33899999999994, page: 2
+    },
+    { text: '0,
+        79 €/mois', x: 468.932, y: 475.893, page: 2
+    },
+    { text: ' ', x: 508.86000000000007, y: 475.893, page: 2
+    },
+    { text: '0,
+        73 €', x: 525.582, y: 475.893, page: 2
+    },
+    { text: '', x: 66.197, y: 505.17299999999994, page: 2
+    },
+    {
+    text: 'TICGN du 06/04/2022 au 28/04/2022',
+    x: 66.197,
+    y: 505.17299999999994,
+    page: 2
+    },
+    { text: ' ', x: 209.9329999999999, y: 505.17299999999994, page: 2
+    },
+    { text: '279', x: 418.609, y: 503.727, page: 2
+    },
+    { text: ' ', x: 431.8089999999999, y: 503.727, page: 2
+    },
+    { text: '8,
+        41', x: 474.826, y: 503.727, page: 2
+    },
+    { text: ' ', x: 488.98599999999993, y: 503.727, page: 2
+    },
+    { text: '2,
+        35 €', x: 525.582, y: 503.727, page: 2
+    },
+    { text: '', x: 66.197, y: 519.0889999999999, page: 2
+    },
+    {
+    text: 'Contribution au Tarif Acheminement (CTA) du 06/04/2022 au 28/04/2022',
+    x: 66.197,
+    y: 519.0889999999999,
+    page: 2
+    },
+    { text: ' ', x: 337.6979999999999, y: 519.0889999999999, page: 2
+    },
+    { text: '2,
+        61 €', x: 525.582, y: 517.643, page: 2
+    },
+    { text: '', x: 65.197, y: 552.731, page: 2
+    },
+    { text: 'Montant HT', x: 65.197, y: 552.731, page: 2
+    },
+    { text: ' ', x: 118.67900000000002, y: 552.731, page: 2
+    },
+    { text: '25,
+        48 €', x: 525.495, y: 552.731, page: 2
+    },
+    { text: '', x: 66.197, y: 574.583, page: 2
+    },
+    {
+    text: "Assiette TVA 5.5% (appliquée à l'abonnement et à la CTA)*",
+    x: 66.197,
+    y: 574.583,
+    page: 2
+    },
+    { text: ' ', x: 276.4759999999999, y: 574.583, page: 2
+    },
+    { text: '13,
+        91 €', x: 531.831, y: 573.458, page: 2
+    },
+    { text: 'Montant TVA 5.5%', x: 66.197, y: 588.499, page: 2
+    },
+    { text: ' ', x: 133.247, y: 588.499, page: 2
+    },
+    { text: '0,
+        76 €', x: 536.775, y: 587.374, page: 2
+    },
+    {
+    text: 'Assiette TVA 20.0% (appliquée aux consommations, aux prestations et services)*',
+    x: 66.197,
+    y: 602.415,
+    page: 2
+    },
+    { text: ' ', x: 354.88700000000017, y: 602.415, page: 2
+    },
+    { text: '11,
+        57 €', x: 531.831, y: 601.29, page: 2
+    },
+    {
+    text: 'Montant TVA 20.0%',
+    x: 66.197,
+    y: 616.3309999999999,
+    page: 2
+    },
+    { text: ' ', x: 138.197, y: 616.3309999999999, page: 2
+    },
+    { text: '2,
+        31 €', x: 536.775, y: 615.2059999999999, page: 2
+    },
+    { text: '', x: 65.197, y: 635.8, page: 2
+    },
+    { text: 'Montant TTC', x: 65.197, y: 635.8, page: 2
+    },
+    { text: ' ', x: 123.805, y: 635.8, page: 2
+    },
+    { text: '28,
+        55 €', x: 525.495, y: 635.8, page: 2
+    },
+    { text: '', x: 65.197, y: 656.986, page: 2
+    },
+    {
+    text: '* TVA payée sur les débits',
+    x: 65.197,
+    y: 656.986,
+    page: 2
+    }
+]
+Prix Unitaire: 24.49
+Text Items (Full): [
+    {
+    text: 'PAROISSE SAINT LUC',
+    x: 321.315,
+    y: 164.06099999999992,
+    page: 1
+    },
+    { text: '', x: 321.315, y: 174.067, page: 1
+    },
+    { text: 'PLACE SAINT PAUL', x: 321.315, y: 174.067, page: 1
+    },
+    { text: '', x: 321.315, y: 185.06499999999994, page: 1
+    },
+    { text: '37000 TOURS', x: 321.315, y: 185.06499999999994, page: 1
+    },
+    { text: '', x: 29.346, y: 41.805999999999926, page: 1
+    },
+    {
+    text: 'Facture centralisée',
+    x: 29.346,
+    y: 41.805999999999926,
+    page: 1
+    },
+    { text: '', x: 29.346, y: 55.03800000000001, page: 1
+    },
+    { text: 'n° 610250493233', x: 29.346, y: 55.03800000000001, page: 1
+    },
+    { text: '', x: 29.346, y: 69.87, page: 1
+    },
+    { text: 'du 03 Mai 2022', x: 29.346, y: 69.87, page: 1
+    },
+    { text: ' ', x: 107.16599999999998, y: 69.87, page: 1
+    },
+    {
+    text: '(document à conserver au minimum 5 ans)',
+    x: 109.746,
+    y: 69.87,
+    page: 1
+    },
+    { text: '', x: 42.519, y: 93.14299999999992, page: 1
+    },
+    {
+    text: 'Votre Service Client',
+    x: 42.519,
+    y: 93.14299999999992,
+    page: 1
+    },
+    {
+    text: 'Pour tous conseils, informations, réclamations :',
+    x: 46.354,
+    y: 114.23599999999999,
+    page: 1
+    },
+    { text: '', x: 46.354, y: 128.63599999999997, page: 1
+    },
+    {
+    text: 'Par téléphone :',
+    x: 46.354,
+    y: 128.63599999999997,
+    page: 1
+    },
+    { text: ' ', x: 106.04399999999997, y: 128.63599999999997, page: 1
+    },
+    {
+    text: 'lundi au vendredi 9h - 20h',
+    x: 108.412,
+    y: 128.63599999999997,
+    page: 1
+    },
+    {
+    text: 'et samedi 9h - 17h',
+    x: 48.653999999999996,
+    y: 143.03599999999994,
+    page: 1
+    },
+    { text: '', x: 46.354, y: 160.13799999999992, page: 1
+    },
+    { text: '0 970 809 240', x: 46.354, y: 160.13799999999992, page: 1
+    },
+    { text: '', x: 46.354, y: 182.78599999999994, page: 1
+    },
+    { text: 'Par mail :', x: 46.354, y: 182.78599999999994, page: 1
+    },
+    { text: ' ', x: 83.50399999999999, y: 182.78599999999994, page: 1
+    },
+    {
+    text: 'cedre@fr.eni.com',
+    x: 85.93,
+    y: 182.78599999999994,
+    page: 1
+    },
+    { text: '', x: 46.354, y: 197.18599999999992, page: 1
+    },
+    { text: 'Par courrier :', x: 46.354, y: 197.18599999999992, page: 1
+    },
+    { text: '', x: 45.354, y: 209.14199999999994, page: 1
+    },
+    {
+    text: 'ENI SERVICE CLIENT GRANDS COMPTES',
+    x: 45.354,
+    y: 209.14199999999994,
+    page: 1
+    },
+    { text: 'TSA 60215', x: 45.354, y: 220.481, page: 1
+    },
+    {
+    text: '35507 VITRE CEDEX',
+    x: 45.354,
+    y: 231.81999999999994,
+    page: 1
+    },
+    { text: '', x: 42.519, y: 250.54399999999998, page: 1
+    },
+    {
+    text: 'Vos informations commerciales',
+    x: 42.519,
+    y: 250.54399999999998,
+    page: 1
+    },
+    { text: 'Numéro de client :', x: 46.354, y: 269.159, page: 1
+    },
+    { text: ' ', x: 118.68399999999997, y: 269.159, page: 1
+    },
+    { text: '245G20199148', x: 120.59400000000001, y: 269.159, page: 1
+    },
+    { text: '', x: 48.444, y: 283.55899999999997, page: 1
+    },
+    {
+    text: 'PAROISSE SAINT LUC',
+    x: 48.444,
+    y: 283.55899999999997,
+    page: 1
+    },
+    { text: '', x: 46.354, y: 297.95899999999995, page: 1
+    },
+    { text: 'SIRET :', x: 46.354, y: 297.95899999999995, page: 1
+    },
+    { text: ' ', x: 75.454, y: 297.95899999999995, page: 1
+    },
+    { text: '38991231200011', x: 77.474, y: 297.95899999999995, page: 1
+    },
+    {
+    text: 'Offre spécifique contrat à prix de marché',
+    x: 46.354,
+    y: 314.568,
+    page: 1
+    },
+    { text: '', x: 46.354, y: 331.222, page: 1
+    },
+    {
+    text: 'Référence Unique de Mandat :',
+    x: 46.354,
+    y: 331.222,
+    page: 1
+    },
+    { text: '', x: 46.354, y: 347.83099999999996, page: 1
+    },
+    {
+    text: 'Echéance de votre contrat :',
+    x: 46.354,
+    y: 347.83099999999996,
+    page: 1
+    },
+    { text: ' ', x: 154.48399999999995, y: 347.83099999999996, page: 1
+    },
+    {
+    text: '28.04.2022',
+    x: 156.30399999999997,
+    y: 347.83099999999996,
+    page: 1
+    },
+    { text: '', x: 46.354, y: 362.23099999999994, page: 1
+    },
+    {
+    text: 'Préavis de résiliation :',
+    x: 46.354,
+    y: 362.23099999999994,
+    page: 1
+    },
+    { text: ' ', x: 132.21399999999994, y: 362.23099999999994, page: 1
+    },
+    { text: '60 jours', x: 134.074, y: 362.23099999999994, page: 1
+    },
+    {
+    text: 'Date de règlement : 17 Juin 2022',
+    x: 46.354,
+    y: 389.64399999999995,
+    page: 1
+    },
+    {
+    text: 'En cas d’absence de paiement au 17 Juin 2022, pénalités de',
+    x: 46.354,
+    y: 398.23599999999993,
+    page: 1
+    },
+    {
+    text: 'retard exigibles à compter de cette date.',
+    x: 46.354,
+    y: 406.8279999999999,
+    page: 1
+    },
+    {
+    text: 'Indemnité forfaitaire pour frais de recouvrement en cas de retard',
+    x: 46.354,
+    y: 415.4199999999999,
+    page: 1
+    },
+    {
+    text: 'de paiement : 40 €',
+    x: 46.354,
+    y: 424.0119999999999,
+    page: 1
+    },
+    {
+    text: "Nos conditions de vente ne prévoient pas d'escompte pour",
+    x: 46.354,
+    y: 432.60399999999987,
+    page: 1
+    },
+    {
+    text: 'paiement anticipé.',
+    x: 46.354,
+    y: 441.19599999999986,
+    page: 1
+    },
+    { text: '', x: 366.034, y: 283.587, page: 1
+    },
+    { text: '06/04/2022', x: 366.034, y: 283.587, page: 1
+    },
+    { text: 'Période du', x: 311.806, y: 283.587, page: 1
+    },
+    { text: ' ', x: 362.94999999999993, y: 283.587, page: 1
+    },
+    { text: '28/04/2022', x: 446.558, y: 283.587, page: 1
+    },
+    { text: 'au', x: 431.042, y: 283.587, page: 1
+    },
+    {
+    text: 'Montant total HT',
+    x: 311.811,
+    y: 307.71799999999996,
+    page: 1
+    },
+    { text: ' ', x: 387.4689999999999, y: 307.71799999999996, page: 1
+    },
+    { text: '25,
+        48 €', x: 497.148, y: 307.71799999999996, page: 1
+    },
+    { text: '', x: 327.91100000000006, y: 324.405, page: 1
+    },
+    { text: 'Dont TICGN', x: 327.91100000000006, y: 324.405, page: 1
+    },
+    { text: ' ', x: 376.95100000000014, y: 324.405, page: 1
+    },
+    { text: '2,
+        35 €', x: 505.722, y: 324.405, page: 1
+    },
+    {
+    text: 'Dont CTA',
+    x: 327.91100000000006,
+    y: 341.41299999999995,
+    page: 1
+    },
+    { text: ' ', x: 367.0110000000001, y: 341.41299999999995, page: 1
+    },
+    { text: '2,
+        61 €', x: 505.722, y: 341.41299999999995, page: 1
+    },
+    { text: 'TVA 5.5%', x: 311.811, y: 358.42099999999994, page: 1
+    },
+    { text: ' ', x: 350.361, y: 358.42099999999994, page: 1
+    },
+    { text: '0,
+        76 €', x: 505.722, y: 358.42099999999994, page: 1
+    },
+    { text: 'TVA 20.0%', x: 311.811, y: 375.429, page: 1
+    },
+    { text: ' ', x: 355.861, y: 375.429, page: 1
+    },
+    { text: '2,
+        31 €', x: 505.722, y: 375.429, page: 1
+    },
+    { text: '', x: 311.811, y: 392.758, page: 1
+    },
+    { text: 'Montant TTC', x: 311.811, y: 392.758, page: 1
+    },
+    { text: ' ', x: 370.41899999999987, y: 392.758, page: 1
+    },
+    { text: '28,
+        55 €', x: 497.148, y: 392.758, page: 1
+    },
+    { text: '', x: 309.977, y: 409.566, page: 1
+    },
+    {
+    text: 'Consommation globale facturée',
+    x: 309.977,
+    y: 409.566,
+    page: 1
+    },
+    {
+    text: 'dont le détail est en annexe : 279 kWh',
+    x: 309.977,
+    y: 420.907,
+    page: 1
+    },
+    { text: '', x: 349.723, y: 431.936, page: 1
+    },
+    {
+    text: 'Le montant de la facture sera prélevé le 17 Juin 2022',
+    x: 349.723,
+    y: 431.936,
+    page: 1
+    },
+    { text: '', x: 312.811, y: 450.917, page: 1
+    },
+    {
+    text: 'Consommation de gaz annuelle estimée au début du contrat :',
+    x: 312.811,
+    y: 450.917,
+    page: 1
+    },
+    { text: '7.463 kWh', x: 312.811, y: 459.933, page: 1
+    },
+    { text: '', x: 588.698, y: 761.168, page: 1
+    },
+    {
+    text: "Eni Gas & Power France S.A. au capital de 29.937.600 Euros – R.C.S. NANTERRE 451 225 692 - N° TVA : FR87451225692 – 24 RUE JACQUES IBERT CS 500001 92533 LEVALLOIS PERRET CEDEX - L'énergie est notre avenir économisons-la ! - site web eni.com/fr",
+    x: 588.698,
+    y: 761.168,
+    page: 1
+    },
+    { text: 'FPF2012-10PRO -', x: 588.698, y: 807.872, page: 1
+    },
+    { text: '', x: 63.362, y: 696.058, page: 1
+    },
+    {
+    text: 'Vous avez choisi le paiement par prélèvement',
+    x: 63.362,
+    y: 696.058,
+    page: 1
+    },
+    { text: ' ', x: 279.59, y: 696.058, page: 1
+    },
+    { text: '610250493233', x: 452.858, y: 696.9459999999999, page: 1
+    },
+    { text: '', x: 63.362, y: 712.662, page: 1
+    },
+    {
+    text: 'Nous vous remercions de votre confiance.',
+    x: 63.362,
+    y: 712.662,
+    page: 1
+    },
+    {
+    text: 'En cas de rejet de prélèvement, merci de joindre ce talon à votre règlement à :',
+    x: 63.362,
+    y: 722.555,
+    page: 1
+    },
+    {
+    text: 'ENI SERVICE ENCAISSEMENT',
+    x: 265.282,
+    y: 736.0459999999999,
+    page: 1
+    },
+    { text: 'TSA 71328', x: 298.41999999999996, y: 745.064, page: 1
+    },
+    {
+    text: '13205 MARSEILLE CEDEX 01',
+    x: 264.55299999999994,
+    y: 754.082,
+    page: 1
+    },
+    { text: '', x: 199.059, y: 769.1419999999999, page: 1
+    },
+    {
+    text: 'Contact Service Encaissement : 0 977 402 575',
+    x: 199.059,
+    y: 769.1419999999999,
+    page: 1
+    },
+    { text: '', x: 141.519, y: 776.342, page: 1
+    },
+    {
+    text: '(Uniquement pour le paiement de votre facture - Prix d’un appel local depuis un poste fixe)',
+    x: 141.519,
+    y: 776.342,
+    page: 1
+    },
+    {
+    text: 'Le prélèvement sera effectué à la date du 17 Juin 2022 sur le compte suivant :',
+    x: 63.362,
+    y: 788.606,
+    page: 1
+    },
+    { text: ' ', x: 340.3099999999999, y: 788.606, page: 1
+    },
+    { text: '/', x: 343.748, y: 788.606, page: 1
+    },
+    { text: '', x: 63.362, y: 814.293, page: 1
+    },
+    { text: 'PAROISSE SAINT LUC', x: 63.362, y: 814.293, page: 1
+    },
+    { text: ' ', x: 145.13600000000002, y: 814.293, page: 1
+    },
+    { text: '245G20199148', x: 471.553, y: 814.293, page: 1
+    },
+    { text: '17 Juin 2022', x: 63.362, y: 828.209, page: 1
+    },
+    { text: ' ', x: 112.18700000000003, y: 828.209, page: 1
+    },
+    { text: '28,
+        55 €', x: 502.645, y: 828.209, page: 1
+    },
+    {
+    text: 'Le détail de votre facture eni',
+    x: 56.693,
+    y: 90.41399999999999,
+    page: 2
+    },
+    { text: '', x: 60.528, y: 106.60799999999995, page: 2
+    },
+    {
+    text: 'À ce jour, toutes vos consommations ont été facturées (réelles ou estimées).',
+    x: 60.528,
+    y: 106.60799999999995,
+    page: 2
+    },
+    { text: '', x: 58.11, y: 145.163, page: 2
+    },
+    {
+    text: 'ASSOCIATION DIOCESAINE DE TOURS',
+    x: 58.11,
+    y: 145.163,
+    page: 2
+    },
+    {
+    text: 'Adresse et coordonnées du site',
+    x: 56.693,
+    y: 191.93599999999992,
+    page: 2
+    },
+    { text: '', x: 56.693, y: 210.75400000000002, page: 2
+    },
+    {
+    text: 'PAROISSE ST LUC - EGLISE',
+    x: 56.693,
+    y: 210.75400000000002,
+    page: 2
+    },
+    {
+    text: '93 RUE DE BEAUJARDIN',
+    x: 56.693,
+    y: 222.09299999999996,
+    page: 2
+    },
+    { text: '37000 TOURS', x: 56.693, y: 233.43200000000002, page: 2
+    },
+    { text: '', x: 57.693, y: 258.741, page: 2
+    },
+    { text: 'Code NAF :', x: 57.693, y: 258.741, page: 2
+    },
+    { text: ' ', x: 97.806, y: 258.741, page: 2
+    },
+    { text: '9491Z', x: 99.61500000000001, y: 258.741, page: 2
+    },
+    { text: '', x: 56.693, y: 273.08899999999994, page: 2
+    },
+    {
+    text: 'Fourniture de gaz naturel du',
+    x: 56.693,
+    y: 273.08899999999994,
+    page: 2
+    },
+    { text: ' ', x: 156.47600000000003, y: 273.08899999999994, page: 2
+    },
+    { text: '06/04/2022', x: 162.575, y: 273.08899999999994, page: 2
+    },
+    { text: ' ', x: 208.0789999999999, y: 273.08899999999994, page: 2
+    },
+    { text: '28/04/2022', x: 224.193, y: 273.08899999999994, page: 2
+    },
+    { text: 'au', x: 211.854, y: 273.08899999999994, page: 2
+    },
+    { text: '', x: 323.15, y: 192.71299999999997, page: 2
+    },
+    {
+    text: 'Votre N° de dépannage 24H/24,
+        7J/7',
+    x: 323.15,
+    y: 192.71299999999997,
+    page: 2
+    },
+    { text: '', x: 324.15, y: 237.26799999999992, page: 2
+    },
+    {
+    text: 'Appel gratuit depuis un poste fixe',
+    x: 324.15,
+    y: 237.26799999999992,
+    page: 2
+    },
+    { text: '', x: 366.67, y: 255.005, page: 2
+    },
+    { text: '09724167860472', x: 366.67, y: 255.005, page: 2
+    },
+    { text: 'N° PCE :', x: 323.15000000000003, y: 255.005, page: 2
+    },
+    {
+    text: 'PRO 6M/MM prix fixe',
+    x: 398.554,
+    y: 266.34399999999994,
+    page: 2
+    },
+    {
+    text: 'Offre appliquée :',
+    x: 323.154,
+    y: 266.34399999999994,
+    page: 2
+    },
+    { text: 'P011', x: 385.356, y: 279.84399999999994, page: 2
+    },
+    {
+    text: 'Profil du site :',
+    x: 323.146,
+    y: 279.84399999999994,
+    page: 2
+    },
+    { text: '3 775 kWh', x: 383.541, y: 291.183, page: 2
+    },
+    { text: 'CAR du site :', x: 323.151, y: 291.183, page: 2
+    },
+    { text: '7 463 kWh', x: 401.995, y: 303.26199999999994, page: 2
+    },
+    {
+    text: 'CAR Facturation :',
+    x: 323.155,
+    y: 303.26199999999994,
+    page: 2
+    },
+    { text: 'T2', x: 439.58, y: 317.76199999999994, page: 2
+    },
+    {
+    text: "Votre tarif d'acheminement :",
+    x: 323.15,
+    y: 317.76199999999994,
+    page: 2
+    },
+    { text: 'S3924', x: 439.58, y: 329.101, page: 2
+    },
+    { text: 'Vos identifiants :', x: 323.15, y: 329.101, page: 2
+    },
+    { text: '', x: 67.346, y: 377.21399999999994, page: 2
+    },
+    { text: 'Numéro de', x: 67.346, y: 377.21399999999994, page: 2
+    },
+    { text: 'compteur', x: 69.714, y: 385.8059999999999, page: 2
+    },
+    { text: 'Index de', x: 128.455, y: 377.21399999999994, page: 2
+    },
+    {
+    text: 'départ',
+    x: 131.62300000000002,
+    y: 385.8059999999999,
+    page: 2
+    },
+    { text: 'Index de', x: 185.148, y: 377.21399999999994, page: 2
+    },
+    { text: 'fin', x: 194.308, y: 385.8059999999999, page: 2
+    },
+    { text: ' ', x: 202.564, y: 385.8059999999999, page: 2
+    },
+    { text: 'PTA', x: 248.528, y: 381.51, page: 2
+    },
+    { text: ' ', x: 261.736, y: 381.51, page: 2
+    },
+    {
+    text: 'Volume converti',
+    x: 285.844,
+    y: 377.21399999999994,
+    page: 2
+    },
+    { text: 'en m3', x: 301.572, y: 385.8059999999999, page: 2
+    },
+    {
+    text: 'Coefficient de',
+    x: 346.367,
+    y: 377.21399999999994,
+    page: 2
+    },
+    {
+    text: 'conversion',
+    x: 351.23900000000003,
+    y: 385.8059999999999,
+    page: 2
+    },
+    { text: 'Consommation', x: 400.477, y: 377.21399999999994, page: 2
+    },
+    { text: 'en kWh', x: 413.197, y: 385.8059999999999, page: 2
+    },
+    { text: 'Prix unitaire', x: 462.829, y: 377.21399999999994, page: 2
+    },
+    { text: '€/MWh', x: 469.045, y: 385.8059999999999, page: 2
+    },
+    { text: 'Montant Hors', x: 516.666, y: 377.21399999999994, page: 2
+    },
+    {
+    text: 'Taxes',
+    x: 529.3860000000001,
+    y: 385.8059999999999,
+    page: 2
+    },
+    { text: '958', x: 78.451, y: 403.049, page: 2
+    },
+    { text: ' ', x: 91.65100000000001, y: 403.049, page: 2
+    },
+    { text: '3 005', x: 132.033, y: 403.049, page: 2
+    },
+    { text: ' ', x: 151.473, y: 403.049, page: 2
+    },
+    { text: '3 030', x: 188.726, y: 403.049, page: 2
+    },
+    { text: ' ', x: 208.16600000000003, y: 403.049, page: 2
+    },
+    { text: '1,
+        000', x: 245.857, y: 403.049, page: 2
+    },
+    { text: ' ', x: 264.417, y: 403.049, page: 2
+    },
+    { text: '25', x: 307.42, y: 403.049, page: 2
+    },
+    { text: ' ', x: 316.21999999999997, y: 403.049, page: 2
+    },
+    { text: '11,
+        160', x: 357.047, y: 403.049, page: 2
+    },
+    { text: ' ', x: 380.0069999999999, y: 403.049, page: 2
+    },
+    { text: '279', x: 418.609, y: 403.049, page: 2
+    },
+    { text: '', x: 66.197, y: 421.41799999999995, page: 2
+    },
+    {
+    text: 'Consommation réelle du 06/04/2022 au 28/04/2022',
+    x: 66.197,
+    y: 421.41799999999995,
+    page: 2
+    },
+    { text: ' ', x: 261.0529999999999, y: 421.41799999999995, page: 2
+    },
+    { text: '279', x: 418.609, y: 419.972, page: 2
+    },
+    { text: ' ', x: 431.8089999999999, y: 419.972, page: 2
+    },
+    { text: '24,
+        49', x: 472.629, y: 419.972, page: 2
+    },
+    { text: ' ', x: 491.1889999999999, y: 419.972, page: 2
+    },
+    { text: '6,
+        83 €', x: 525.582, y: 419.972, page: 2
+    },
+    { text: '', x: 66.197, y: 435.33399999999995, page: 2
+    },
+    {
+    text: 'Distribution terme variable du 06/04/2022 au 28/04/2022',
+    x: 66.197,
+    y: 435.33399999999995,
+    page: 2
+    },
+    { text: ' ', x: 279.52699999999993, y: 435.33399999999995, page: 2
+    },
+    { text: '279', x: 418.609, y: 433.888, page: 2
+    },
+    { text: ' ', x: 431.8089999999999, y: 433.888, page: 2
+    },
+    { text: '8,
+        57', x: 474.826, y: 433.888, page: 2
+    },
+    { text: ' ', x: 488.98599999999993, y: 433.888, page: 2
+    },
+    { text: '2,
+        39 €', x: 525.582, y: 433.888, page: 2
+    },
+    { text: '', x: 66.197, y: 463.42299999999994, page: 2
+    },
+    {
+    text: 'Distribution terme fixe du 06/04/2022 au 28/04/2022',
+    x: 66.197,
+    y: 463.42299999999994,
+    page: 2
+    },
+    { text: ' ', x: 265.2169999999999, y: 463.42299999999994, page: 2
+    },
+    { text: '11,
+        48 €/mois', x: 464.54, y: 461.977, page: 2
+    },
+    { text: ' ', x: 508.86000000000007, y: 461.977, page: 2
+    },
+    { text: '10,
+        57 €', x: 523.386, y: 461.977, page: 2
+    },
+    { text: '', x: 66.197, y: 477.33899999999994, page: 2
+    },
+    {
+    text: 'Coût transport fixe du 06/04/2022 au 28/04/2022',
+    x: 66.197,
+    y: 477.33899999999994,
+    page: 2
+    },
+    { text: ' ', x: 251.85599999999988, y: 477.33899999999994, page: 2
+    },
+    { text: '0,
+        79 €/mois', x: 468.932, y: 475.893, page: 2
+    },
+    { text: ' ', x: 508.86000000000007, y: 475.893, page: 2
+    },
+    { text: '0,
+        73 €', x: 525.582, y: 475.893, page: 2
+    },
+    { text: '', x: 66.197, y: 505.17299999999994, page: 2
+    },
+    {
+    text: 'TICGN du 06/04/2022 au 28/04/2022',
+    x: 66.197,
+    y: 505.17299999999994,
+    page: 2
+    },
+    { text: ' ', x: 209.9329999999999, y: 505.17299999999994, page: 2
+    },
+    { text: '279', x: 418.609, y: 503.727, page: 2
+    },
+    { text: ' ', x: 431.8089999999999, y: 503.727, page: 2
+    },
+    { text: '8,
+        41', x: 474.826, y: 503.727, page: 2
+    },
+    { text: ' ', x: 488.98599999999993, y: 503.727, page: 2
+    },
+    { text: '2,
+        35 €', x: 525.582, y: 503.727, page: 2
+    },
+    { text: '', x: 66.197, y: 519.0889999999999, page: 2
+    },
+    {
+    text: 'Contribution au Tarif Acheminement (CTA) du 06/04/2022 au 28/04/2022',
+    x: 66.197,
+    y: 519.0889999999999,
+    page: 2
+    },
+    { text: ' ', x: 337.6979999999999, y: 519.0889999999999, page: 2
+    },
+    { text: '2,
+        61 €', x: 525.582, y: 517.643, page: 2
+    },
+    { text: '', x: 65.197, y: 552.731, page: 2
+    },
+    { text: 'Montant HT', x: 65.197, y: 552.731, page: 2
+    },
+    { text: ' ', x: 118.67900000000002, y: 552.731, page: 2
+    },
+    { text: '25,
+        48 €', x: 525.495, y: 552.731, page: 2
+    },
+    { text: '', x: 66.197, y: 574.583, page: 2
+    },
+    {
+    text: "Assiette TVA 5.5% (appliquée à l'abonnement et à la CTA)*",
+    x: 66.197,
+    y: 574.583,
+    page: 2
+    },
+    { text: ' ', x: 276.4759999999999, y: 574.583, page: 2
+    },
+    { text: '13,
+        91 €', x: 531.831, y: 573.458, page: 2
+    },
+    { text: 'Montant TVA 5.5%', x: 66.197, y: 588.499, page: 2
+    },
+    { text: ' ', x: 133.247, y: 588.499, page: 2
+    },
+    { text: '0,
+        76 €', x: 536.775, y: 587.374, page: 2
+    },
+    {
+    text: 'Assiette TVA 20.0% (appliquée aux consommations, aux prestations et services)*',
+    x: 66.197,
+    y: 602.415,
+    page: 2
+    },
+    { text: ' ', x: 354.88700000000017, y: 602.415, page: 2
+    },
+    { text: '11,
+        57 €', x: 531.831, y: 601.29, page: 2
+    },
+    {
+    text: 'Montant TVA 20.0%',
+    x: 66.197,
+    y: 616.3309999999999,
+    page: 2
+    },
+    { text: ' ', x: 138.197, y: 616.3309999999999, page: 2
+    },
+    { text: '2,
+        31 €', x: 536.775, y: 615.2059999999999, page: 2
+    },
+    { text: '', x: 65.197, y: 635.8, page: 2
+    },
+    { text: 'Montant TTC', x: 65.197, y: 635.8, page: 2
+    },
+    { text: ' ', x: 123.805, y: 635.8, page: 2
+    },
+    { text: '28,
+        55 €', x: 525.495, y: 635.8, page: 2
+    },
+    { text: '', x: 65.197, y: 656.986, page: 2
+    },
+    {
+    text: '* TVA payée sur les débits',
+    x: 65.197,
+    y: 656.986,
+    page: 2
+    }
+]
